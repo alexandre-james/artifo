@@ -2,7 +2,7 @@ CC = g++
 
 CPP_FILES = src/image/*.cpp
 
-OBJ_FILES = $(CPP_FILES:.cu=.o)
+OBJ_FILES = $(CPP_FILES:.cpp=.o)
 
 CXX_FLAGS = -Wall -O3
 LDXX_FLAGS =
