@@ -1,10 +1,10 @@
 CC = g++
 
-CPP_FILES = 
+CPP_FILES = src/image/*.cpp
 
 OBJ_FILES = $(CPP_FILES:.cu=.o)
 
-CXX_FLAGS = -Wall -Wextra -O3
+CXX_FLAGS = -Wall -O3
 LDXX_FLAGS =
 
 all: build

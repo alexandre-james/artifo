@@ -1,24 +1,11 @@
-#include <stdint.h>
+#include "image/rgba_image.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../lib/stb_image.h"
+#include <stdio.h>
 
 int main() {
-    const char *filename = "input/image.png";
-    int x,y,n;
-    if (stbi_info(filename, &x, &y, &n)) {
-        int width, height, bpp;
+    rgba_image *image = new rgba_image("input/image.png");
 
-        uint8_t* rgb_image = stbi_load(filename, &width, &height, &bpp, 3);
+    image->save("test.png");
 
-        printf("width: %d\n", width);
-
-        stbi_image_free(rgb_image);
-
-        return 0;
-    }
-    else {
-        printf("error: can't open image\n");
-        return 1;
-    }
+    delete image;
 }
