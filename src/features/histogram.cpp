@@ -42,3 +42,22 @@ rgba_image *histogram_to_image(const histogram histogram, const char *color) {
 
     return image;
 }
+
+void densest(histogram histogram, float threshold, int &min, int &max) {
+  int length = 0;
+  for (int i = 0; i < NB_LEVELS; i++)
+    length += histogram.columns[i];
+
+  int min_interval = NB_LEVELS;
+  for (int i = 0; i < NB_LEVELS; i++) {
+    int sum = 0;
+    for (int j = i; j < NB_LEVELS && j < i + min_interval; j++) {
+      sum += histogram.columns[j];
+      if (sum > threshold * length) {
+        min = i;
+        max = j;
+        min_interval = j - i;
+      }
+    }
+  }
+}
