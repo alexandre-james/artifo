@@ -1,11 +1,20 @@
-#include "image/rgba_image.h"
-
 #include <stdio.h>
 
-int main() {
-    rgba_image *image = new rgba_image("input/image.png");
+#include "image/conversion.hpp"
+#include "features/histogram.hpp"
 
-    image->save("test.png");
+int main() {
+    rgb_image *image = new rgb_image("input/image.png");
+
+    gray_image *image2 = rgb_to_gray(image);
+
+    histogram histogram = gray_histogram(image2);
+
+    rgba_image *image3 = histogram_to_image(histogram);
+
+    image3->save("test.png");
 
     delete image;
+    delete image2;
+    delete image3;
 }

@@ -1,12 +1,12 @@
+#include <cstdlib>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../lib/stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../lib/stb_image_write.h"
 
-#include "image.h"
-
-#include <cstdlib>
+#include "image.hpp"
 
 image::image(int width, int height, int channels)
 : width(width), height(height), channels(channels) {

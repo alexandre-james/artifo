@@ -1,6 +1,6 @@
 CC = g++
 
-CPP_FILES = src/image/*.cpp
+CPP_FILES = src/image/*.cpp src/features/*.cpp
 
 OBJ_FILES = $(CPP_FILES:.cpp=.o)
 

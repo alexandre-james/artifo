@@ -1,7 +1,10 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef IMAGE_HPP
+#define IMAGE_HPP
 
 #include <cstdint>
+
+#define NB_LEVELS 256
+#define MAX_LEVEL (NB_LEVELS - 1)
 
 class image {
     public:
@@ -18,4 +21,4 @@ class image {
         void save(const char *filename) const;
 };
 
-#endif  /* IMAGE_H */
+#endif  /* IMAGE_HPP */
