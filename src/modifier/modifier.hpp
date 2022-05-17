@@ -20,7 +20,7 @@ class modifier {
         template <typename lambda>
         image_type *apply(lambda function) {
             image_type* output = new image_type(input->width, input->height);
-            for (int i = 0; i < output->width * output->height; i++) {
+            for (int i = 0; i < output->width * output->height * input->dim; i++) {
                 output->pixels[i] = function(input->pixels[i], i % input->dim);
             }
             return output;

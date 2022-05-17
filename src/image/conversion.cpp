@@ -1,5 +1,10 @@
 #include "conversion.hpp"
 
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+#include <cstring>
+
 gray_image *rgb_to_gray(const rgb_image *input) {
     gray_image *output = new gray_image(input->width, input->height);
     for (int i = 0 ; i < output->length ; i++) {
@@ -54,7 +59,7 @@ rgb_image *gray_to_rgb(const gray_image *input) {
 }
 
 rgb_image *hsv_to_rgb(const hsv_image *input) {
-    rgb_image *rgb = new rgb_image(image->sx, image->sy);
+    rgb_image *rgb = new rgb_image(input->width, input->height);
 
     for (int i = 0; i < input->length; i+=3)
     {
@@ -88,8 +93,7 @@ rgb_image *hsv_to_rgb(const hsv_image *input) {
 
 template <typename image_type>
 gray_image *get_channel(image_type *input, const int nb) {
-    if (nb >= input->dim)
-        return nullptr;
+    assert(nb < input->dim);
 
     gray_image *output = new gray_image(input->width, input->height);
 
@@ -99,6 +103,54 @@ gray_image *get_channel(image_type *input, const int nb) {
     return output;
 }
 
+template <typename image_type>
+image_type *set_channel(image_type *input, gray_image *channel, const int nb) {
+    assert(nb < input->dim && channel->length * input->dim == input->length);
+
+    image_type *output = new image_type(input->width, input->height);
+
+    for (int i = 0; i < output->length; i++) {
+        if (i % output->dim == nb) {
+            output->pixels[i] = channel->pixels[i / output->dim];
+        }
+        else {
+            output->pixels[i] = input->pixels[i];
+        }
+    }
+    return output;
+}
+
+rgb_image* merge(gray_image *red, gray_image *green, gray_image *blue) {
+    assert(red->length == green->length && red->length == blue->length);
+    rgb_image *output = new rgb_image(red->width, red->height);
+
+    for(int i = 0; i < red->length; i++) {
+    output->pixels[3*i] = red->pixels[i];
+    output->pixels[3*i+1] = green->pixels[i];
+    output->pixels[3*i+2] = blue->pixels[i];
+    }
+
+    return output;
+}
+
+template <typename image_type>
+image_type *image_copy(image_type* input) {
+    image_type *output = new image_type(input->width, input->height);
+    memcpy(output->pixels, input->pixels, output->length);
+    return output;
+}
+
 template gray_image* get_channel<gray_image>(gray_image *input, const int nb);
 template gray_image* get_channel<rgb_image>(rgb_image *input, const int nb);
 template gray_image* get_channel<rgba_image>(rgba_image *input, const int nb);
+template gray_image* get_channel<hsv_image>(hsv_image *input, const int nb);
+
+template gray_image *set_channel<gray_image>(gray_image *input, gray_image *channel, const int nb);
+template rgb_image *set_channel<rgb_image>(rgb_image *input, gray_image *channel, const int nb);
+template rgba_image *set_channel<rgba_image>(rgba_image *input, gray_image *channel, const int nb);
+template hsv_image *set_channel<hsv_image>(hsv_image *input, gray_image *channel, const int nb);
+
+template gray_image *image_copy<gray_image>(gray_image* input);
+template rgb_image *image_copy<rgb_image>(rgb_image* input);
+template rgba_image *image_copy<rgba_image>(rgba_image* input);
+template hsv_image *image_copy<hsv_image>(hsv_image* input);

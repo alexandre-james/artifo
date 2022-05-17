@@ -7,21 +7,25 @@
 int main() {
     rgb_image *image = new rgb_image("input/image.png");
 
-    gray_image *image2 = rgb_to_gray(image);
+    gray_image *blue = get_channel(image, BLUE_CHANNEL);
 
-    histogram histogram = gray_histogram(image2);
+    modifier<gray_image> *modifer = new modifier(blue);
 
-    rgba_image *image3 = histogram_to_image(histogram);
+    rgba_image *hist = histogram_to_image(modifer->histograms[0]);
 
-    modifier<rgb_image> *modifer = new modifier(image);
+    gray_image *blue_linear = modifer->linear();
 
-    rgb_image *image4 = modifer->linear();
+    rgb_image *result = set_channel(image, blue_linear, BLUE_CHANNEL);
 
-    image4->save("test.png");
+    hist->save("hist.png");
+    result->save("test-linear.png");
+    blue->save("test-blue.png");
+    blue_linear->save("test-blue_linear.png");
 
+    delete hist;
     delete image;
-    delete image2;
-    delete image3;
-    delete image4;
+    delete blue;
     delete modifer;
+    delete blue_linear;
+    delete result;
 }

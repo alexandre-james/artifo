@@ -3,9 +3,13 @@
 #include "modifier.hpp"
 #include "../image/conversion.hpp"
 
+#include <cstdio>
+#include <cmath>
+
 template <typename image_type>
 modifier<image_type>::modifier(image_type *input, float threshold)
-: input(input), threshold(threshold) {
+: input(image_copy(input)), threshold(threshold) {
+    channels = (gray_image **) malloc(sizeof(gray_image *) * input->dim);
     histograms = (histogram *) malloc(sizeof(histogram) * input->dim);
     minimums = (int *) malloc(sizeof(int) * input->dim);
     maximums = (int *) malloc(sizeof(int) * input->dim);
@@ -20,7 +24,7 @@ modifier<image_type>::modifier(image_type *input, float threshold)
 template <typename image_type>
 modifier<image_type>::~modifier() {
     for (int i = 0; i < input->dim; i++) {
-        free(channels[i]);
+        delete channels[i];
     }
     free(channels);
     free(histograms);
@@ -30,13 +34,25 @@ modifier<image_type>::~modifier() {
 
 template <typename image_type>
 image_type *modifier<image_type>::linear() {
-    auto function = [=, *this] (int x, int nb) {
+    auto function = [this] (int x, int nb) {
         if (x < minimums[nb])
             return 0;
         if (x > maximums[nb])
-            return NB_LEVELS - 1;
-        int a = NB_LEVELS / (maximums[nb] - minimums[nb]);
-        return a * x - a * minimums[nb];
+            return MAX_LEVEL;
+        float a = (float) MAX_LEVEL / (maximums[nb] - minimums[nb]);
+        return (int) (a * x - a * minimums[nb]);
+    };
+
+    return apply(function);
+}
+
+template <typename image_type>
+image_type *modifier<image_type>::log() {
+    auto function = [this] (int x, int nb) {
+        if (x == 0)
+            return 0;
+        else
+            return (int) (std::log(x) / std::log(maximums[nb]) * maximums[nb]);
     };
 
     return apply(function);

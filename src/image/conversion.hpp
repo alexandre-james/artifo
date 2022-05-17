@@ -17,4 +17,12 @@ rgb_image *hsv_to_rgb(const hsv_image *input);
 template <typename image_type>
 gray_image *get_channel(image_type *input, const int nb);
 
+template <typename image_type>
+image_type *set_channel(image_type *input, gray_image *channel, const int nb);
+
+rgb_image* merge(gray_image *red, gray_image *green, gray_image *blue);
+
+template <typename image_type>
+image_type *image_copy(image_type* input);
+
 #endif  /* CONVERSION_HPP */

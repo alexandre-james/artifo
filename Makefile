@@ -4,7 +4,7 @@ CPP_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cpp
 
 OBJ_FILES = $(CPP_FILES:.cpp=.o)
 
-CXX_FLAGS = -Wall -O3 -std=c++17
+CXX_FLAGS = -Wall -O3 -std=c++17 -g
 LDXX_FLAGS =
 
 all: build
