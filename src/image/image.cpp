@@ -8,18 +8,18 @@
 
 #include "image.hpp"
 
-image::image(int width, int height, int channels)
-: width(width), height(height), channels(channels) {
-    length = width * height * channels;
+image::image(int width, int height, int dim)
+: width(width), height(height), dim(dim) {
+    length = width * height * dim;
     pixels = (uint8_t *) std::malloc(length);
 }
 
-image::image(const char *filename, int channels)
-: channels(channels) {
+image::image(const char *filename, int dim)
+: dim(dim) {
     int bpp;
     if (stbi_info(filename, &width, &height, &bpp)) {
-        pixels = stbi_load(filename, &width, &height, &bpp, channels);
-        length = width * height * channels;
+        pixels = stbi_load(filename, &width, &height, &bpp, dim);
+        length = width * height * dim;
     }
     else {
         printf("error: can't open image\n");
@@ -32,5 +32,5 @@ image::~image() {
 }
 
 void image::save(const char *filename) const {
-    stbi_write_png(filename, width, height, channels, pixels, width * channels);
+    stbi_write_png(filename, width, height, dim, pixels, width * dim);
 }

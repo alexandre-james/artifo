@@ -8,13 +8,13 @@
 
 class image {
     public:
-        int width, height, channels, length;
+        int width, height, dim, length;
 
         uint8_t *pixels = nullptr;
 
-        image(int width, int height, int channels);
+        image(int width, int height, int dim);
 
-        image(const char *filename, int channels);
+        image(const char *filename, int dim);
 
         ~image();
 
