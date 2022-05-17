@@ -88,13 +88,17 @@ rgb_image *hsv_to_rgb(const hsv_image *input) {
 
 template <typename image_type>
 gray_image *get_channel(image_type *input, const int nb) {
-    if (nb >= input->nb_chan)
+    if (nb >= input->dim)
         return nullptr;
 
     gray_image *output = new gray_image(input->width, input->height);
 
     for (int i = 0; i < output->length; i++) {
-        output[i] = input[input->nb_chan * i + nb];
+        output->pixels[i] = input->pixels[input->dim * i + nb];
     }
     return output;
 }
+
+template gray_image* get_channel<gray_image>(gray_image *input, const int nb);
+template gray_image* get_channel<rgb_image>(rgb_image *input, const int nb);
+template gray_image* get_channel<rgba_image>(rgba_image *input, const int nb);

@@ -17,8 +17,14 @@ class modifier {
         modifier(image_type *input, float threshold = 0.6);
         ~modifier();
 
-        template <typename image_type, typename lambda>
-        image_type *apply(lambda function);
+        template <typename lambda>
+        image_type *apply(lambda function) {
+            image_type* output = new image_type(input->width, input->height);
+            for (int i = 0; i < output->width * output->height; i++) {
+                output->pixels[i] = function(input->pixels[i], i % input->dim);
+            }
+            return output;
+        }
 
         image_type *linear();
         image_type *log();
