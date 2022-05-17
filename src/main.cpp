@@ -2,6 +2,7 @@
 
 #include "image/conversion.hpp"
 #include "features/histogram.hpp"
+#include "modifier/modifier.hpp"
 
 int main() {
     rgb_image *image = new rgb_image("input/image.png");
@@ -12,9 +13,15 @@ int main() {
 
     rgba_image *image3 = histogram_to_image(histogram);
 
-    image3->save("test.png");
+    modifier<rgb_image> *modifer = new modifier(image);
+
+    rgb_image *image4 = modifer->linear();
+
+    image4->save("test.png");
 
     delete image;
     delete image2;
     delete image3;
+    delete image4;
+    delete modifer;
 }
