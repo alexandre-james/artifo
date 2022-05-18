@@ -23,6 +23,7 @@ modifier<image_type>::modifier(image_type *input, float threshold)
 
 template <typename image_type>
 modifier<image_type>::~modifier() {
+    delete input;
     for (int i = 0; i < input->dim; i++) {
         delete channels[i];
     }

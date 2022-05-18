@@ -5,7 +5,9 @@
 #include "modifier/modifier.hpp"
 
 int main() {
-    rgb_image *image = new rgb_image("input/image.png");
+    rgb_image *image = new rgb_image("input/test.jpg");
+
+    /*
 
     gray_image *blue = get_channel(image, BLUE_CHANNEL);
 
@@ -27,5 +29,15 @@ int main() {
     delete blue;
     delete modifer;
     delete blue_linear;
+    delete result;*/
+
+    hsv_image *hsv = rgb_to_hsv(image);
+    hsv->save("hsv.png");
+
+    rgb_image *result = hsv_to_rgb(hsv);
+    result->save("result.png");
+
     delete result;
+    delete image;
+    delete hsv;
 }
