@@ -98,6 +98,20 @@ gray_image *get_channel(image_type *input, const int nb) {
 }
 
 template <typename image_type>
+gray_image **get_channels(image_type *input) {
+    gray_image **channels = (gray_image **) malloc(input->dim * sizeof(gray_image *));
+
+    for (int i = 0; i < input->dim; i++) {
+        channels[i] = new gray_image(input->width, input->height);
+    }
+    for (int i = 0; i < input->length; i++) {
+        channels[i % input->dim]->pixels[i / input->dim] = input->pixels[i];
+    }
+    return channels;
+}
+
+
+template <typename image_type>
 image_type *set_channel(image_type *input, gray_image *channel, const int nb) {
     assert(nb < input->dim && channel->length * input->dim == input->length);
 
@@ -110,6 +124,16 @@ image_type *set_channel(image_type *input, gray_image *channel, const int nb) {
         else {
             output->pixels[i] = input->pixels[i];
         }
+    }
+    return output;
+}
+
+template <typename image_type>
+image_type *merge(gray_image **&channels) {
+    image_type *output = new image_type(channels[0]->width, channels[0]->height);
+
+    for (int i = 0; i < output->length; i++) {
+        output->pixels[i] = channels[i % output->dim]->pixels[i / output->dim];
     }
     return output;
 }
@@ -139,10 +163,20 @@ template gray_image* get_channel<rgb_image>(rgb_image *input, const int nb);
 template gray_image* get_channel<rgba_image>(rgba_image *input, const int nb);
 template gray_image* get_channel<hsv_image>(hsv_image *input, const int nb);
 
+template gray_image **get_channels<gray_image>(gray_image *input);
+template gray_image **get_channels<rgb_image>(rgb_image *input);
+template gray_image **get_channels<rgba_image>(rgba_image *input);
+template gray_image **get_channels<hsv_image>(hsv_image *input);
+
 template gray_image *set_channel<gray_image>(gray_image *input, gray_image *channel, const int nb);
 template rgb_image *set_channel<rgb_image>(rgb_image *input, gray_image *channel, const int nb);
 template rgba_image *set_channel<rgba_image>(rgba_image *input, gray_image *channel, const int nb);
 template hsv_image *set_channel<hsv_image>(hsv_image *input, gray_image *channel, const int nb);
+
+template gray_image *merge<gray_image>(gray_image **&channels);
+template rgb_image *merge<rgb_image>(gray_image **&channels);
+template rgba_image *merge<rgba_image>(gray_image **&channels);
+template hsv_image *merge<hsv_image>(gray_image **&channels);
 
 template gray_image *image_copy<gray_image>(gray_image* input);
 template rgb_image *image_copy<rgb_image>(rgb_image* input);

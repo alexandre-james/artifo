@@ -1,6 +1,16 @@
+#pragma once
+
 #include <initializer_list>
 
 class mask {
     public:
-    mask(std::initializer_list<float> )
+        int width, height;
+        float *values;
+
+        mask(int width, int height);
+        mask(std::initializer_list<std::initializer_list<float>> init);
+        ~mask();
+
+        template <typename image_type>
+        image_type *convolve(image_type *image);
 };
