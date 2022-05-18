@@ -40,7 +40,7 @@ hsv_image *rgb_to_hsv(const rgb_image *input) {
         else
         h = 60 * ((rp - gp) / delta + 4);
 
-        hsv->pixels[i] = h;
+        hsv->pixels[i] = h * 255 / 360;
         hsv->pixels[i+1] = (cmax == 0) ? 0 : delta / cmax * 255;
         hsv->pixels[i+2] = cmax * 255;
     }
@@ -63,7 +63,7 @@ rgb_image *hsv_to_rgb(const hsv_image *input) {
 
     for (int i = 0; i < input->length; i+=3)
     {
-        double h = input->pixels[i];
+        double h = input->pixels[i] * 360 / 255;
         double s = (double) input->pixels[i+1] / 255;
         double v = (double) input->pixels[i+2] / 255;
 
