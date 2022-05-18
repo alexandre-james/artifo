@@ -3,6 +3,8 @@
 #include "image/conversion.hpp"
 #include "features/histogram.hpp"
 #include "modifier/modifier.hpp"
+#include "tools/saturation.hpp"
+#include "tools/contrast.hpp"
 
 int main() {
     rgb_image *image = new rgb_image("input/test.jpg");
@@ -31,13 +33,9 @@ int main() {
     delete blue_linear;
     delete result;*/
 
-    hsv_image *hsv = rgb_to_hsv(image);
-    hsv->save("hsv.png");
-
-    rgb_image *result = hsv_to_rgb(hsv);
-    result->save("result.png");
+    rgb_image *result = contrast(image, 0.6);
+    result->save("saturate.png");
 
     delete result;
     delete image;
-    delete hsv;
 }

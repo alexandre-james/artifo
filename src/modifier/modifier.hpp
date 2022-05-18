@@ -2,6 +2,7 @@
 #define MODIFIER_HPP
 
 #include "../features/histogram.hpp"
+#include "../image/rgb_image.hpp"
 
 template <typename image_type>
 class modifier {
@@ -9,10 +10,7 @@ class modifier {
         image_type *input;
         float threshold;
 
-        gray_image **channels;
-        histogram *histograms;
-        int *minimums;
-        int *maximums;
+        int min, max;
 
         modifier(image_type *input, float threshold = 0.6);
         ~modifier();
@@ -20,8 +18,8 @@ class modifier {
         template <typename lambda>
         image_type *apply(lambda function) {
             image_type* output = new image_type(input->width, input->height);
-            for (int i = 0; i < output->width * output->height * input->dim; i++) {
-                output->pixels[i] = function(input->pixels[i], i % input->dim);
+            for (int i = 0; i < output->length; i++) {
+                output->pixels[i] = function(input->pixels[i]);
             }
             return output;
         }

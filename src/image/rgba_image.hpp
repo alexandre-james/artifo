@@ -8,6 +8,8 @@ class rgba_image: public image {
         rgba_image(int width, int height);
 
         rgba_image(const char *filename);
+
+        rgba_image *copy() const;
 };
 
 #endif  /* RGBA_IMAGE_HPP */

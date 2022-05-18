@@ -6,6 +6,9 @@
 #include "rgba_image.hpp"
 #include "hsv_image.hpp"
 
+#include <typeinfo>
+#include <cassert>
+
 /** From rgb **/
 gray_image *rgb_to_gray(const rgb_image *input);
 hsv_image *rgb_to_hsv(const rgb_image *input);
