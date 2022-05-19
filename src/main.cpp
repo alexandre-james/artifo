@@ -8,8 +8,13 @@
 #include "tools/contrast.hpp"
 #include "tools/manipulation.hpp"
 
-int main() {
-    rgb_image *image = new rgb_image("input/test.jpg");
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        fprintf(stderr, "Invalid parameters\nformat: ./tifo <file_path>\n");
+        return 1;
+    }
+
+    rgb_image *image = new rgb_image(argv[1]);
 
     /*
 
@@ -35,14 +40,14 @@ int main() {
     delete blue_linear;
     delete result;*/
 
-    rgb_image *result = gaussian(image, 10, 10);
+    rgb_image *result = gaussian(image, 10, 1);
     result->save("pure-gaussian.png");
 
-    rgb_image *result2 = apply_channels(gaussian, image, 10, 10);
+    rgb_image *result2 = apply_channels(gaussian, image, 10, 1);
     result2->save("chan-gaussian.png");
 
     gray_image *gray = image->to_gray();
-    gray_image *result3 = gaussian(gray, 10, 10);
+    gray_image *result3 = gaussian(gray, 10, 1);
     result3->save("gray-gaussian.png");
 
     delete gray;
