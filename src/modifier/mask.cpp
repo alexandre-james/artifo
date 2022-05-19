@@ -1,8 +1,5 @@
 #include "mask.hpp"
-#include "../image/gray_image.hpp"
-#include "../image/rgb_image.hpp"
-#include "../image/rgba_image.hpp"
-#include "../image/hsv_image.hpp"
+#include "../image/conversion.hpp"
 
 #include <cassert>
 #include <cstdlib>
@@ -30,6 +27,16 @@ mask::~mask() {
     free(values);
 }
 
+mask *mask::transpose() {
+    mask *output = new mask(height, width);
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            output->values[j * height + i] = values[i * width + j];
+        }
+    }
+    return output;
+}
+
 template <typename image_type>
 image_type *mask::convolve(image_type *input) {
     int y_gap = height / 2;
@@ -43,7 +50,7 @@ image_type *mask::convolve(image_type *input) {
                     sum += (float) values[i * width + j] * (float) input->pixels[(y - y_gap + i) * input->width * input->dim + x - x_gap + j];
                 }
             }
-            output->pixels[(y - y_gap) * output->width * output->dim + x - x_gap] = sum;
+            output->pixels[(y - y_gap) * output->width * output->dim + x - x_gap] = bound(sum);
         }
     }
     return output;

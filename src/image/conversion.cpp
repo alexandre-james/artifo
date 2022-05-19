@@ -158,6 +158,28 @@ image_type *image_copy(image_type* input) {
     return output;
 }
 
+uint8_t bound(int nb) {
+    if (nb > MAX_LEVEL)
+        return MAX_LEVEL;
+    if (nb < 0)
+        return 0;
+    return nb;
+}
+
+template <typename image_type>
+image_type *combine(image_type *input1, image_type *input2) {
+    assert(input1->width == input2->width && input1->height == input2->height);
+
+    image_type *output = new image_type(input1->width, input1->height);
+
+    for (int i = 0; i < output->length; i++) {
+        output->pixels[i] = bound(input1->pixels[i] + input2->pixels[i]);
+    }
+
+    return output;
+}
+
+
 template gray_image* get_channel<gray_image>(gray_image *input, const int nb);
 template gray_image* get_channel<rgb_image>(rgb_image *input, const int nb);
 template gray_image* get_channel<rgba_image>(rgba_image *input, const int nb);
@@ -182,3 +204,8 @@ template gray_image *image_copy<gray_image>(gray_image* input);
 template rgb_image *image_copy<rgb_image>(rgb_image* input);
 template rgba_image *image_copy<rgba_image>(rgba_image* input);
 template hsv_image *image_copy<hsv_image>(hsv_image* input);
+
+template gray_image *combine<gray_image>(gray_image *input1, gray_image *input2);
+template rgb_image *combine<rgb_image>(rgb_image *input1, rgb_image *input2);
+template rgba_image *combine<rgba_image>(rgba_image *input1, rgba_image *input2);
+template hsv_image *combine<hsv_image>(hsv_image *input1, hsv_image *input2);

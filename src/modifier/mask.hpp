@@ -11,6 +11,8 @@ class mask {
         mask(std::initializer_list<std::initializer_list<float>> init);
         ~mask();
 
+        mask *transpose();
+
         template <typename image_type>
         image_type *convolve(image_type *image);
 };
