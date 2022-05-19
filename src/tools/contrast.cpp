@@ -1,7 +1,7 @@
 #include "contrast.hpp"
 #include "../image/conversion.hpp"
 
-rgb_image*contrast(rgb_image* input, float threshold) {
+rgb_image *contrast(rgb_image* input, float threshold) {
     hsv_image *hsv = rgb_to_hsv(input);
     gray_image *v_channel = get_channel(hsv, V_CHANNEL);
 

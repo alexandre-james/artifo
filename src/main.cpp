@@ -3,8 +3,10 @@
 #include "image/conversion.hpp"
 #include "features/histogram.hpp"
 #include "modifier/modifier.hpp"
+#include "modifier/filter.hpp"
 #include "tools/saturation.hpp"
 #include "tools/contrast.hpp"
+#include "tools/manipulation.hpp"
 
 int main() {
     rgb_image *image = new rgb_image("input/test.jpg");
@@ -33,9 +35,19 @@ int main() {
     delete blue_linear;
     delete result;*/
 
-    rgb_image *result = contrast(image, 0.6);
-    result->save("saturate.png");
+    rgb_image *result = gaussian(image, 10, 10);
+    result->save("pure-gaussian.png");
 
+    rgb_image *result2 = apply_channels(gaussian, image, 10, 10);
+    result2->save("chan-gaussian.png");
+
+    gray_image *gray = image->to_gray();
+    gray_image *result3 = gaussian(gray, 10, 10);
+    result3->save("gray-gaussian.png");
+
+    delete gray;
     delete result;
+    delete result2;
+    delete result3;
     delete image;
 }
