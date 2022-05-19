@@ -17,6 +17,7 @@ image_type *sobel(image_type *input) {
     mask *dx_kernel = new mask({{-1, 0, 1},
                                 {-2, 0, 2},
                                 {-1, 0, 1}});
+
     mask *dy_kernel = dx_kernel->transpose();
 
     image_type *dx_output = dx_kernel->convolve(input);
@@ -31,6 +32,18 @@ image_type *sobel(image_type *input) {
     return output;
 }
 
+template <typename image_type>
+image_type *laplacian(image_type *input) {
+    mask *kernel = new mask({{0, -1, 0},
+                                {-1, 5, -1},
+                                {0, -1, 0}});
+
+    image_type *output = kernel->convolve(input);
+    delete kernel;
+
+    return output;
+}
+
 template gray_image *gaussian(gray_image *input, int width, int height);
 template rgb_image *gaussian(rgb_image *input, int width, int height);
 template rgba_image *gaussian(rgba_image *input, int width, int height);
@@ -40,3 +53,8 @@ template gray_image *sobel(gray_image *input);
 template rgb_image *sobel(rgb_image *input);
 template rgba_image *sobel(rgba_image *input);
 template hsv_image *sobel(hsv_image *input);
+
+template gray_image *laplacian(gray_image *input);
+template rgb_image *laplacian(rgb_image *input);
+template rgba_image *laplacian(rgba_image *input);
+template hsv_image *laplacian(hsv_image *input);
