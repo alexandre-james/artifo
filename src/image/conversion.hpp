@@ -27,16 +27,19 @@ template <typename image_type>
 image_type *set_channel(image_type *input, gray_image *channel, const int nb);
 
 template <typename image_type>
-image_type *merge(gray_image **&channels);
+image_type *merge(gray_image **channels);
 
 rgb_image* merge(gray_image *red, gray_image *green, gray_image *blue);
 
 template <typename image_type>
-image_type *image_copy(image_type* input);
+image_type *image_copy(image_type *input);
 
 uint8_t bound(int nb);
 
 template <typename image_type>
-image_type *combine(image_type *input1, image_type *input2);
+image_type *add(image_type *input1, image_type *input2);
+
+template <typename image_type>
+image_type *substract(image_type *input1, image_type *input2);
 
 #endif  /* CONVERSION_HPP */
