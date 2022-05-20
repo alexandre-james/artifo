@@ -192,6 +192,17 @@ image_type *substract(image_type *input1, image_type *input2) {
     return output;  
 }
 
+template <typename image_type>
+image_type *multiply(image_type *input, const float nb) {
+    image_type *output = new image_type(input->width, input->height);
+
+    for (int i = 0; i < output->length; i++) {
+        output->pixels[i] = bound(nb * input->pixels[i]);
+    }
+
+    return output;  
+}
+
 template gray_image *get_channel(gray_image *, const int);
 template gray_image *get_channel(rgb_image *, const int);
 template gray_image *get_channel(rgba_image *, const int);
@@ -226,3 +237,8 @@ template gray_image *substract(gray_image *, gray_image *);
 template rgb_image *substract(rgb_image *, rgb_image *);
 template rgba_image *substract(rgba_image *, rgba_image *);
 template hsv_image *substract(hsv_image *, hsv_image *);
+
+template gray_image *multiply(gray_image *, const float);
+template rgb_image *multiply(rgb_image *, const float);
+template rgba_image *multiply(rgba_image *, const float);
+template hsv_image *multiply(hsv_image *, const float);

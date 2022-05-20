@@ -7,10 +7,14 @@
 template <typename image_type>
 image_type *high_boost(image_type *input) {
     int size = 4;
-    float sigma = size / 1.5;
+    float sigma = size / 3;
     image_type *gauss = apply_channels(gaussian, input, size, sigma);
     image_type *diff = substract(gauss, input);
     image_type *output = add(input, diff);
+
+    delete gauss;
+    delete diff;
+
     return output;
 }
 
