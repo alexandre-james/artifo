@@ -35,8 +35,8 @@ image_type *sobel(image_type *input) {
 template <typename image_type>
 image_type *laplacian(image_type *input) {
     mask *kernel = new mask({{0, -1, 0},
-                                {-1, 5, -1},
-                                {0, -1, 0}});
+                            {-1, 4, -1},
+                            {0, -1, 0}});
 
     image_type *output = kernel->convolve(input);
     delete kernel;
@@ -44,17 +44,34 @@ image_type *laplacian(image_type *input) {
     return output;
 }
 
-template gray_image *gaussian(gray_image *input, int width, int height);
-template rgb_image *gaussian(rgb_image *input, int width, int height);
-template rgba_image *gaussian(rgba_image *input, int width, int height);
-template hsv_image *gaussian(hsv_image *input, int width, int height);
+template <typename image_type>
+image_type *laplacian_sharp(image_type *input) {
+    mask *kernel = new mask({{0, -1, 0},
+                            {-1, 5, -1},
+                            {0, -1, 0}});
 
-template gray_image *sobel(gray_image *input);
-template rgb_image *sobel(rgb_image *input);
-template rgba_image *sobel(rgba_image *input);
-template hsv_image *sobel(hsv_image *input);
+    image_type *output = kernel->convolve(input);
+    delete kernel;
 
-template gray_image *laplacian(gray_image *input);
-template rgb_image *laplacian(rgb_image *input);
-template rgba_image *laplacian(rgba_image *input);
-template hsv_image *laplacian(hsv_image *input);
+    return output;
+}
+
+template gray_image *gaussian(gray_image *, int, int);
+template rgb_image *gaussian(rgb_image *, int, int);
+template rgba_image *gaussian(rgba_image *, int, int);
+template hsv_image *gaussian(hsv_image *, int, int);
+
+template gray_image *sobel(gray_image *);
+template rgb_image *sobel(rgb_image *);
+template rgba_image *sobel(rgba_image *);
+template hsv_image *sobel(hsv_image *);
+
+template gray_image *laplacian(gray_image *);
+template rgb_image *laplacian(rgb_image *);
+template rgba_image *laplacian(rgba_image *);
+template hsv_image *laplacian(hsv_image *);
+
+template gray_image *laplacian_sharp(gray_image *);
+template rgb_image *laplacian_sharp(rgb_image *);
+template rgba_image *laplacian_sharp(rgba_image *);
+template hsv_image *laplacian_sharp(hsv_image *);
