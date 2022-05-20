@@ -14,3 +14,6 @@ image_type *laplacian(image_type *input);
 
 template <typename image_type>
 image_type *laplacian_sharp(image_type *input);
+
+template <typename image_type>
+image_type *laplacian_of_gaussian(image_type *input, int size, float sigma);

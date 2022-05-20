@@ -84,7 +84,7 @@ void mask::print_row(int i) {
     if (i != 0)
         printf(" ");
     printf("[");
-    if (width < 7) {
+    if (width < 15) {
         for (int j = 0; j < width; j++)
             printf(" %f", values[i * width + j]);
     }
@@ -102,7 +102,7 @@ void mask::print_row(int i) {
 
 void mask::print() {
     printf("[");
-    if (height < 7) {
+    if (height < 15) {
         for (int i = 0; i < height; i++)
             print_row(i);
     }

@@ -73,6 +73,20 @@ image_type *laplacian_sharp(image_type *input) {
     return output;
 }
 
+template <typename image_type>
+image_type *laplacian_of_gaussian(image_type *input, int size, float sigma) {
+    mask *kernel = new mask(size * 2 + 1, size * 2 + 1);
+    for (int y = -size; y <= size; y++) {
+        for (int x = -size; x <= size; x++) {
+            kernel->values[(y + size) * kernel->width + x + size] = - 480 / (M_PI * std::pow(sigma, 4)) * (1 - (x * x + y * y) / (2 * sigma * sigma)) * exp(-(x * x + y * y) / (2 * sigma * sigma));
+        }
+    }
+    kernel->print();
+    image_type *output = kernel->convolve(input);
+    delete kernel;
+    return output;
+}
+
 template gray_image *average(gray_image *, int, int);
 template rgb_image *average(rgb_image *, int, int);
 template rgba_image *average(rgba_image *, int, int);
@@ -97,3 +111,8 @@ template gray_image *laplacian_sharp(gray_image *);
 template rgb_image *laplacian_sharp(rgb_image *);
 template rgba_image *laplacian_sharp(rgba_image *);
 template hsv_image *laplacian_sharp(hsv_image *);
+
+template gray_image *laplacian_of_gaussian(gray_image *, int, float);
+template rgb_image *laplacian_of_gaussian(rgb_image *, int, float);
+template rgba_image *laplacian_of_gaussian(rgba_image *, int, float);
+template hsv_image *laplacian_of_gaussian(hsv_image *, int, float);
