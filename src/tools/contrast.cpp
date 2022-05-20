@@ -5,7 +5,7 @@ rgb_image *contrast(rgb_image* input, float threshold) {
     hsv_image *hsv = rgb_to_hsv(input);
     gray_image *v_channel = get_channel(hsv, V_CHANNEL);
 
-    modifier<gray_image> *modif = new modifier(v_channel, threshold);
+    modifier<gray_image> *modif = new modifier<gray_image>(v_channel, threshold);
     gray_image *v_linear = modif->linear();
 
     hsv_image *result = set_channel(hsv, v_linear, V_CHANNEL);

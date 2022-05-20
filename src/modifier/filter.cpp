@@ -1,5 +1,5 @@
 #include "filter.hpp"
-#include "mask.hpp"
+#include "convolution.hpp"
 #include "../image/conversion.hpp"
 
 #include <cmath>
@@ -11,7 +11,7 @@ image_type *average(image_type *input, int width, int height) {
     for (int i = 0; i < width * height; i++) {
         kernel->values[i] = 1. / (width * height);
     }
-    image_type *output = kernel->convolve(input);
+    image_type *output = convolve(input, kernel);
     delete kernel;
     return output;
 }
@@ -24,7 +24,7 @@ image_type *gaussian(image_type *input, int size, float sigma) {
             kernel->values[(y + size) * kernel->width + x + size] = 1 / (2 * M_PI * sigma * sigma) * exp(-(x * x + y * y) / (2 * sigma * sigma));
         }
     }
-    image_type *output = kernel->convolve(input);
+    image_type *output = convolve(input, kernel);
     delete kernel;
     return output;
 }
@@ -37,8 +37,8 @@ image_type *sobel(image_type *input) {
 
     mask *dy_kernel = dx_kernel->transpose();
 
-    image_type *dx_output = dx_kernel->convolve(input);
-    image_type *dy_output = dy_kernel->convolve(input);
+    image_type *dx_output = convolve(input, dx_kernel);
+    image_type *dy_output = convolve(input, dy_kernel);
     image_type *output = add(dx_output, dy_output);
 
     delete dx_kernel;
@@ -55,7 +55,7 @@ image_type *laplacian(image_type *input) {
                             {-1, 4, -1},
                             {0, -1, 0}});
 
-    image_type *output = kernel->convolve(input);
+    image_type *output = convolve(input, kernel);
     delete kernel;
 
     return output;
@@ -67,7 +67,7 @@ image_type *laplacian_sharp(image_type *input) {
                             {-1, 5, -1},
                             {0, -1, 0}});
 
-    image_type *output = kernel->convolve(input);
+    image_type *output = convolve(input, kernel);
     delete kernel;
 
     return output;
@@ -82,7 +82,7 @@ image_type *laplacian_of_gaussian(image_type *input, int size, float sigma) {
         }
     }
     kernel->print();
-    image_type *output = kernel->convolve(input);
+    image_type *output = convolve(input, kernel);
     delete kernel;
     return output;
 }

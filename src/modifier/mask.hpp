@@ -15,9 +15,6 @@ class mask {
         ~mask();
 
         mask *transpose();
-
-        template <typename image_type>
-        image_type *convolve(image_type *image);
         
         void print();
 };
