@@ -8,6 +8,7 @@
 #include "tools/contrast.hpp"
 #include "tools/manipulation.hpp"
 #include "tools/sharpness.hpp"
+#include "tools/color_reduction.hpp"
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -43,7 +44,9 @@ int main(int argc, char **argv) {
 
     int size = 4;
     float sigma = size / 1.5;
- 
+
+    std::cout << "Main color channel : " << more_represented_channel(image) << '\n';
+
     rgb_image *result = gaussian(image, size, sigma);
     result->save("pure-gaussian.png");
 
