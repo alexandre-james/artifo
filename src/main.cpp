@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "image/conversion.hpp"
 #include "features/histogram.hpp"
 #include "modifier/modifier.hpp"
@@ -8,6 +6,11 @@
 #include "tools/contrast.hpp"
 #include "tools/manipulation.hpp"
 #include "tools/sharpness.hpp"
+#include "tools/edge.hpp"
+
+#include <cstdio>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -41,28 +44,31 @@ int main(int argc, char **argv) {
     delete blue_linear;
     delete result;*/
 
-    int size = 4;
-    float sigma = size / 1.5;
+    int size = 3;
+    float sigma = 0.84089642;
+
+    if (access("output", F_OK))
+        mkdir("output", 0777);
  
     rgb_image *result = gaussian(image, size, sigma);
-    result->save("pure-gaussian.png");
+    result->save("output/pure-gaussian.png");
 
     rgb_image *result2 = apply_channels(gaussian, image, size, sigma);
-    result2->save("chan-gaussian.png");
+    result2->save("output/chan-gaussian.png");
 
     gray_image *gray = image->to_gray();
     gray_image *result3 = gaussian(gray, size, sigma);
-    result3->save("gray-gaussian.png");
+    result3->save("output/gray-gaussian.png");
 
-    rgb_image *boost = high_boost(image);
-    boost->save("boost.png");
+    gray_image *diff = multiply(difference_of_gaussian(gray, 2), 5);
+    diff->save("output/diff.png");
 
-    delete boost;
+    delete diff;
 
-    delete result;
+    delete result3;
     delete result2;
     delete gray;
-    delete result3;
+    delete result;
     delete image;
 
     return 0;
