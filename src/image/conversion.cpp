@@ -129,7 +129,7 @@ image_type *set_channel(image_type *input, gray_image *channel, const int nb) {
 }
 
 template <typename image_type>
-image_type *merge(gray_image **&channels) {
+image_type *merge(gray_image **channels) {
     image_type *output = new image_type(channels[0]->width, channels[0]->height);
 
     for (int i = 0; i < output->length; i++) {
@@ -152,7 +152,7 @@ rgb_image* merge(gray_image *red, gray_image *green, gray_image *blue) {
 }
 
 template <typename image_type>
-image_type *image_copy(image_type* input) {
+image_type *image_copy(image_type *input) {
     image_type *output = new image_type(input->width, input->height);
     memcpy(output->pixels, input->pixels, output->length);
     return output;
@@ -167,7 +167,7 @@ uint8_t bound(int nb) {
 }
 
 template <typename image_type>
-image_type *combine(image_type *input1, image_type *input2) {
+image_type *add(image_type *input1, image_type *input2) {
     assert(input1->width == input2->width && input1->height == input2->height);
 
     image_type *output = new image_type(input1->width, input1->height);
@@ -179,33 +179,50 @@ image_type *combine(image_type *input1, image_type *input2) {
     return output;
 }
 
+template <typename image_type>
+image_type *substract(image_type *input1, image_type *input2) {
+    assert(input1->width == input2->width && input1->height == input2->height);
 
-template gray_image* get_channel<gray_image>(gray_image *input, const int nb);
-template gray_image* get_channel<rgb_image>(rgb_image *input, const int nb);
-template gray_image* get_channel<rgba_image>(rgba_image *input, const int nb);
-template gray_image* get_channel<hsv_image>(hsv_image *input, const int nb);
+    image_type *output = new image_type(input1->width, input1->height);
 
-template gray_image **get_channels<gray_image>(gray_image *input);
-template gray_image **get_channels<rgb_image>(rgb_image *input);
-template gray_image **get_channels<rgba_image>(rgba_image *input);
-template gray_image **get_channels<hsv_image>(hsv_image *input);
+    for (int i = 0; i < output->length; i++) {
+        output->pixels[i] = bound(input1->pixels[i] - input2->pixels[i]);
+    }
 
-template gray_image *set_channel<gray_image>(gray_image *input, gray_image *channel, const int nb);
-template rgb_image *set_channel<rgb_image>(rgb_image *input, gray_image *channel, const int nb);
-template rgba_image *set_channel<rgba_image>(rgba_image *input, gray_image *channel, const int nb);
-template hsv_image *set_channel<hsv_image>(hsv_image *input, gray_image *channel, const int nb);
+    return output;  
+}
 
-template gray_image *merge<gray_image>(gray_image **&channels);
-template rgb_image *merge<rgb_image>(gray_image **&channels);
-template rgba_image *merge<rgba_image>(gray_image **&channels);
-template hsv_image *merge<hsv_image>(gray_image **&channels);
+template gray_image *get_channel(gray_image *, const int);
+template gray_image *get_channel(rgb_image *, const int);
+template gray_image *get_channel(rgba_image *, const int);
+template gray_image *get_channel(hsv_image *, const int);
 
-template gray_image *image_copy<gray_image>(gray_image* input);
-template rgb_image *image_copy<rgb_image>(rgb_image* input);
-template rgba_image *image_copy<rgba_image>(rgba_image* input);
-template hsv_image *image_copy<hsv_image>(hsv_image* input);
+template gray_image **get_channels(gray_image *);
+template gray_image **get_channels(rgb_image *);
+template gray_image **get_channels(rgba_image *);
+template gray_image **get_channels(hsv_image *);
 
-template gray_image *combine<gray_image>(gray_image *input1, gray_image *input2);
-template rgb_image *combine<rgb_image>(rgb_image *input1, rgb_image *input2);
-template rgba_image *combine<rgba_image>(rgba_image *input1, rgba_image *input2);
-template hsv_image *combine<hsv_image>(hsv_image *input1, hsv_image *input2);
+template gray_image *set_channel(gray_image *, gray_image *, const int);
+template rgb_image *set_channel(rgb_image *, gray_image *, const int);
+template rgba_image *set_channel(rgba_image *, gray_image *, const int);
+template hsv_image *set_channel(hsv_image *, gray_image *, const int);
+
+template gray_image *merge(gray_image **);
+template rgb_image *merge(gray_image **);
+template rgba_image *merge(gray_image **);
+template hsv_image *merge(gray_image **);
+
+template gray_image *image_copy(gray_image *);
+template rgb_image *image_copy(rgb_image *);
+template rgba_image *image_copy(rgba_image *);
+template hsv_image *image_copy(hsv_image *);
+
+template gray_image *add(gray_image *, gray_image *);
+template rgb_image *add(rgb_image *, rgb_image *);
+template rgba_image *add(rgba_image *, rgba_image *);
+template hsv_image *add(hsv_image *, hsv_image *);
+
+template gray_image *substract(gray_image *, gray_image *);
+template rgb_image *substract(rgb_image *, rgb_image *);
+template rgba_image *substract(rgba_image *, rgba_image *);
+template hsv_image *substract(hsv_image *, hsv_image *);

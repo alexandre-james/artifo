@@ -5,6 +5,8 @@ CPP_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cpp src/tools/*.cp
 OBJ_FILES = $(CPP_FILES:.cpp=.o)
 
 CXX_FLAGS = -Wall -O3 -std=c++17 -g
+CXX_FLAGS += -m64 -march=native
+CXX_FLAGS += # -fopt-info-vec-optimized -fopt-info-vec-missed -ftree-vectorize
 LDXX_FLAGS =
 
 all: build

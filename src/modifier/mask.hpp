@@ -3,6 +3,9 @@
 #include <initializer_list>
 
 class mask {
+    private:
+        void print_row(int i);
+
     public:
         int width, height;
         float *values;
@@ -15,4 +18,6 @@ class mask {
 
         template <typename image_type>
         image_type *convolve(image_type *image);
+        
+        void print();
 };
