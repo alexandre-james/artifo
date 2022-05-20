@@ -17,4 +17,4 @@ build: $(CPP_FILES)
 .PHONY: all clean build
 
 clean:
-	rm -f tifo $(OBJ_FILES)
+	rm -f tifo $(OBJ_FILES) *.png
