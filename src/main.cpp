@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
     float sigma = size / 1.5;
 
     //std::cout << "Main color channel : " << more_represented_channel(image) << '\n';
+    rgb_image *result_color = colorReduction(image, 4);
+    result_color->save("color_reduction.png");
 
     rgb_image *result = gaussian(image, size, sigma);
     result->save("pure-gaussian.png");
