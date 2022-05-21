@@ -7,18 +7,99 @@
 #include "tools/manipulation.hpp"
 #include "tools/sharpness.hpp"
 #include "tools/edge.hpp"
+#include "tools/resolution.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cstring>
+#include <dirent.h>
+#include <cstdlib>
+#include <string>
+#include <iostream>
+
+int is_image(char *filename)
+{
+  filename = strrchr(filename, '.');
+
+  if (filename != NULL)
+    return !(strcmp(filename, ".jpg") && strcmp(filename, ".png"));
+
+  return false;
+}
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        fprintf(stderr, "Invalid parameters\nformat: ./tifo <file_path>\n");
+    if (argc < 3) {
+        fprintf(stderr, "Invalid parameters\nformat: ./tifo <filter> <file_path/all> <args...>\n");
         return 1;
     }
 
-    rgb_image *image = new rgb_image(argv[1]);
+    char **filenames;
+    int nb_files = 0;
+
+    if (strcmp(argv[2], "all")) {
+        nb_files = 1;
+        filenames = (char **) malloc(sizeof(char *));
+        filenames[0] = argv[2];
+    }
+    else {
+        DIR *dr = opendir("input");
+        if (dr == NULL)
+        {
+            mkdir("input", 0777);
+            printf("Please insert images in input/ directory\n");
+            return 0;
+        }
+        struct dirent *de;
+        while ((de = readdir(dr)) != NULL) {
+            if (is_image(de->d_name))
+                nb_files++;
+        }
+
+        if (nb_files == 0) {
+            printf("Please insert images in input/ directory\n");
+            return 0;
+        }
+
+        filenames = (char **) malloc(nb_files * sizeof(char *));
+
+        int i = 0;
+        seekdir(dr, 0);
+        while ((de = readdir(dr)) != NULL) {
+            if (is_image(de->d_name))
+                filenames[i++] = de->d_name;
+        }
+        
+        closedir(dr);
+    }
+
+    printf("nb_files: %d\n", nb_files);
+
+    if (access("output", F_OK))
+        mkdir("output", 0777);
+
+    const char *filter = argv[1];
+    if (!strcmp(filter, "pixel")) {
+        for (int i = 0; i < nb_files; i++) {
+            printf("filenames[i]: %s\n", filenames[i]);
+            char filename[100];
+            strcpy(filename, "input/");
+            strcat(filename, filenames[i]);
+            printf("filename: %s\n", filename);
+
+            rgb_image *input = new rgb_image(filename);
+            rgb_image *output = apply_channels(rescale, input, 300, 0);
+
+            strcpy(filename, "output/");
+            strcat(filename, filenames[i]);
+            output->save(filename);
+
+            delete input;
+            delete output;
+        }
+    }
+
+    free(filenames);
 
     /*
 
@@ -42,7 +123,7 @@ int main(int argc, char **argv) {
     delete blue;
     delete modifer;
     delete blue_linear;
-    delete result;*/
+    delete result;
 
     int size = 3;
     float sigma = 0.84089642;
@@ -69,7 +150,7 @@ int main(int argc, char **argv) {
     delete result2;
     delete gray;
     delete result;
-    delete image;
+    delete image;*/
 
     return 0;
 }
