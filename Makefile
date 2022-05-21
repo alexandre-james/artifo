@@ -2,10 +2,10 @@ CC = g++
 
 CU = nvcc
 
-CPP_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cpp src/tools/*.cpp
+CPP_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cpp src/tools/*.cpp src/filter/*.cpp
 
-CU_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cu src/tools/*.cpp
-CU_FILES += src/modifier/filter.cpp src/modifier/mask.cpp src/modifier/modifier.cpp
+CU_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cu src/tools/*.cpp src/filter/*.cpp
+CU_FILES += src/modifier/filter.cpp src/modifier/mask.cpp src/modifier/modifier.cpp src/modifier/structure.cpp
 
 OBJ_FILES = $(CPP_FILES:.cpp=.o)
 

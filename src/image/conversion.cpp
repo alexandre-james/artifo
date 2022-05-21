@@ -203,6 +203,17 @@ image_type *multiply(image_type *input, const float nb) {
     return output;  
 }
 
+template <typename image_type>
+image_type *inverse(image_type *input) {
+    image_type *output = new image_type(input->width, input->height);
+
+    for (int i = 0; i < output->length; i++) {
+        output->pixels[i] = MAX_LEVEL - input->pixels[i];
+    }
+
+    return output; 
+}
+
 template gray_image *get_channel(gray_image *, const int);
 template gray_image *get_channel(rgb_image *, const int);
 template gray_image *get_channel(rgba_image *, const int);
@@ -242,3 +253,8 @@ template gray_image *multiply(gray_image *, const float);
 template rgb_image *multiply(rgb_image *, const float);
 template rgba_image *multiply(rgba_image *, const float);
 template hsv_image *multiply(hsv_image *, const float);
+
+template gray_image *inverse(gray_image *);
+template rgb_image *inverse(rgb_image *);
+template rgba_image *inverse(rgba_image *);
+template hsv_image *inverse(hsv_image *);

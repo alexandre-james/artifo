@@ -8,6 +8,7 @@
 #include "tools/sharpness.hpp"
 #include "tools/edge.hpp"
 #include "tools/resolution.hpp"
+#include "filter/pixel.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
@@ -28,6 +29,30 @@ int is_image(char *filename)
   return false;
 }
 
+char *get_name(char *output, const char *filename) {
+    int i = 0;
+    while (filename[i] != 0) {
+        i++;
+    }
+    while (i >= 0 && filename[i] != '/') {
+        i--;
+    }
+    strcpy(output, filename + i + 1);
+    return output;
+}
+
+rgb_image *filter(rgb_image *input, int argc, char **argv) {
+    if (!strcmp(argv[1], "pixel")) {
+        if (argc < 6) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo pixel <file_path/all> <height: int> <divisions: int> <outline: bool>\n");
+            exit(1);
+        }
+        return pixel(input, atoi(argv[3]), atoi(argv[4]), strcmp(argv[5], "false") && strcmp(argv[5], "0"));
+    }
+    fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
+    exit(1);
+}
+
 int main(int argc, char **argv) {
     if (argc < 3) {
         fprintf(stderr, "Invalid parameters\nformat: ./tifo <filter> <file_path/all> <args...>\n");
@@ -36,13 +61,9 @@ int main(int argc, char **argv) {
 
     char **filenames;
     int nb_files = 0;
+    bool all = !strcmp(argv[2], "all");
 
-    if (strcmp(argv[2], "all")) {
-        nb_files = 1;
-        filenames = (char **) malloc(sizeof(char *));
-        filenames[0] = argv[2];
-    }
-    else {
+    if (all) {
         DIR *dr = opendir("input");
         if (dr == NULL)
         {
@@ -72,31 +93,39 @@ int main(int argc, char **argv) {
         
         closedir(dr);
     }
+    else {
+        nb_files = 1;
+        filenames = (char **) malloc(sizeof(char *));
+        filenames[0] = argv[2];
+    }
 
     printf("nb_files: %d\n", nb_files);
 
     if (access("output", F_OK))
         mkdir("output", 0777);
 
-    const char *filter = argv[1];
-    if (!strcmp(filter, "pixel")) {
-        for (int i = 0; i < nb_files; i++) {
-            printf("filenames[i]: %s\n", filenames[i]);
-            char filename[100];
+    for (int i = 0; i < nb_files; i++) {
+        printf("filenames[i]: %s\n", filenames[i]);
+        char filename[100];
+        char name[100];
+        if (all) {
             strcpy(filename, "input/");
             strcat(filename, filenames[i]);
-            printf("filename: %s\n", filename);
-
-            rgb_image *input = new rgb_image(filename);
-            rgb_image *output = apply_channels(rescale, input, 300, 0);
-
-            strcpy(filename, "output/");
-            strcat(filename, filenames[i]);
-            output->save(filename);
-
-            delete input;
-            delete output;
         }
+        else {
+            strcpy(filename, filenames[i]);
+        }
+        printf("filename: %s\n", filename);
+
+        rgb_image *input = new rgb_image(filename);
+        rgb_image *output = filter(input, argc, argv);
+
+        strcpy(filename, "output/");
+        strcat(filename, get_name(name, filenames[i]));
+        output->save(filename);
+
+        delete input;
+        delete output;
     }
 
     free(filenames);

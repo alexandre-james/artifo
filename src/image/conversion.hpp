@@ -45,4 +45,7 @@ image_type *substract(image_type *input1, image_type *input2);
 template <typename image_type>
 image_type *multiply(image_type *input, const float nb);
 
+template <typename image_type>
+image_type *inverse(image_type *input);
+
 #endif  /* CONVERSION_HPP */

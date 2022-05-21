@@ -81,7 +81,6 @@ image_type *laplacian_of_gaussian(image_type *input, int size, float sigma) {
             kernel->values[(y + size) * kernel->width + x + size] = - 480 / (M_PI * std::pow(sigma, 4)) * (1 - (x * x + y * y) / (2 * sigma * sigma)) * exp(-(x * x + y * y) / (2 * sigma * sigma));
         }
     }
-    kernel->print();
     image_type *output = convolve(input, kernel);
     delete kernel;
     return output;
