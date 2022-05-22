@@ -1,5 +1,4 @@
-#ifndef RGBA_IMAGE_HPP
-#define RGBA_IMAGE_HPP
+#pragma once
 
 #include "image.hpp"
 
@@ -11,5 +10,3 @@ class rgba_image: public image {
 
         rgba_image *copy() const;
 };
-
-#endif  /* RGBA_IMAGE_HPP */

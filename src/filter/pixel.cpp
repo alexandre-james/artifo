@@ -8,7 +8,7 @@
 #include "../modifier/modifier.hpp"
 #include "../modifier/convolution.hpp"
 #include "../modifier/filter.hpp"
-#include "../modifier/structure.hpp"
+#include "../construct/structure.hpp"
 
 rgb_image *pixel(rgb_image *input, int height, int divisions, bool outline) {
     rgb_image *pretreated;
@@ -37,7 +37,7 @@ rgb_image *pixel(rgb_image *input, int height, int divisions, bool outline) {
     }
 
     rgb_image *pixelized = apply_channels(pixelize, pretreated, height, 0);
-
+    
     double y_ratio = (double) height / input->height;
     int width = input->width * y_ratio;
 

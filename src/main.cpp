@@ -10,6 +10,7 @@
 #include "tools/resolution.hpp"
 #include "filter/pixel.hpp"
 #include "filter/cartoon.hpp"
+#include "filter/dot.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
@@ -50,12 +51,19 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
         }
         return pixel(input, atoi(argv[3]), atoi(argv[4]), strcmp(argv[5], "false") && strcmp(argv[5], "0"));
     }
-    else if (!strcmp(argv[1], "cartoon")) {
+    if (!strcmp(argv[1], "cartoon")) {
         if (argc < 4) {
             fprintf(stderr, "Invalid parameters\nformat: ./tifo cartoon <file_path/all> <height: int>\n");
             exit(1);
         }
         return cartoon(input, atoi(argv[3]));
+    }
+    if (!strcmp(argv[1], "dot")) {
+        if (argc < 5) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo dot <file_path/all> <radius: double> <height: int>\n");
+            exit(1);
+        }
+        return dot(input, atoi(argv[4]), strtof(argv[3], nullptr));
     }
     fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
     exit(1);

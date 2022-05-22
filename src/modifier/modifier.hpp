@@ -1,5 +1,4 @@
-#ifndef MODIFIER_HPP
-#define MODIFIER_HPP
+#pragma once
 
 #include "../features/histogram.hpp"
 #include "../image/rgb_image.hpp"
@@ -27,5 +26,3 @@ class modifier {
         image_type *linear();
         image_type *log();
 };
-
-#endif  /* MODIFIER_HPP */
