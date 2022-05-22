@@ -31,25 +31,25 @@ int *get_colors(gray_image* input, int width, int height) {
 	return colors;
 }
 
-point<int> *get_centers(gray_image* input, int width, int height) {
-	point<int> *centers = (point<int> *) malloc(width * height * sizeof(point<int>));
+point<float> *get_centers(gray_image* input, int width, int height) {
+	point<float> *centers = (point<float> *) malloc(width * height * sizeof(point<float>));
 	for (int dy = 0; dy < height; dy++) {
-		int y = dy * input->height / height + input->height / (2 * height);
-		int start = 0;
+		float y = (float) dy * input->height / height + (float) input->height / (2 * height);
+		float start = 0;
 		if (dy % 2 == 1) {
 			start = input->width / (2 * width);
 		}
 		
 		for (int dx = 0; dx < width; dx++) {
-			int x = dx * input->width / width + start;
-			centers[dy * width + dx] = point(x, y);
+			float x = dx * input->width / width + start;
+			centers[dy * width + dx] = point<float>(x, y);
 		}
 	}
 
 	return centers;
 }
 
-void paint(gray_image *input, int color, float radius, point<int> center) {
+void paint(gray_image *input, int color, float radius, point<float> center) {
 	for (int y = center.y - radius; y <= center.y + radius; y++) {
 		for (int x = center.x - radius; x <= center.x + radius; x++) {
 			if (x >= 0 && y >= 0 && x < input->width && y < input->height
@@ -60,7 +60,7 @@ void paint(gray_image *input, int color, float radius, point<int> center) {
 	}
 }
 
-bool in_hexagon(point<int> center, point<int> p, float radius) {
+bool in_hexagon(point<float> center, point<int> p, float radius) {
     float By = center.y - 2 * radius / (float) sqrt(3);
     float Dy = center.y + 2 * radius / (float) sqrt(3);
     float a = 1. / sqrt(3);
@@ -72,7 +72,7 @@ bool in_hexagon(point<int> center, point<int> p, float radius) {
     && p.y > f1(p.x) && p.y > f2(p.x) && p.y < f3(p.x) && p.y < f4(p.x);
 }
 
-void paint_hexagon(gray_image *input, int color, float radius, point<int> center) {
+void paint_hexagon(gray_image *input, int color, float radius, point<float> center) {
 	for (int y = center.y - radius * 2. / sqrt(3); y <= center.y + radius * 2. / sqrt(3); y++) {
 		for (int x = center.x - radius; x <= center.x + radius; x++) {
 			if (x >= 0 && y >= 0 && x < input->width && y < input->height

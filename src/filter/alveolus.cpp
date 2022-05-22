@@ -11,7 +11,7 @@
 gray_image *gray_alveolus(gray_image *input, int width, float radius) {
 	int height = (double) width * (2. / sqrt(3)) * input->height / input->width;
 	int *colors = get_colors(input, width, height);
-	point<int> *centers = get_centers(input, width, height);
+	point<float> *centers = get_centers(input, width, height);
 
 	gray_image *output = new gray_image(input->width, input->height);
 

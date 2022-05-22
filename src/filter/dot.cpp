@@ -6,10 +6,10 @@
 #include <cstdlib>
 #include <cmath>
 
-gray_image *gray_dot(gray_image *input, int height, float radius) {
-	int width = height * (5. / 6);
+gray_image *gray_dot(gray_image *input, int width, float radius) {
+	int height = (double) width * (2. / sqrt(3)) * input->height / input->width;
 	int *colors = get_colors(input, width, height);
-	point<int> *centers = get_centers(input, width, height);
+	point<float> *centers = get_centers(input, width, height);
 
 	gray_image *output = new gray_image(input->width, input->height);
 
