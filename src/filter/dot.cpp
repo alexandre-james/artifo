@@ -1,12 +1,10 @@
 #include "dot.hpp"
 #include "../tools/center.hpp"
 #include "../tools/manipulation.hpp"
-#include "../image/gray_image.hpp"
-#include "../image/rgb_image.hpp"
-#include "../image/rgba_image.hpp"
-#include "../image/hsv_image.hpp"
+#include "../image/conversion.hpp"
 
 #include <cstdlib>
+#include <cstdio>
 
 gray_image *gray_dot(gray_image *input, int height, float radius) {
 	int width = height * (5. / 6);
@@ -32,7 +30,23 @@ gray_image *gray_dot(gray_image *input, int height, float radius) {
 
 template <typename image_type>
 image_type *dot(image_type *input, int height, float radius) {
-	return apply_channels(gray_dot, input, height, radius);
+	gray_image **channels = get_channels(input);
+
+    for (int i = 0; i < input->dim; i++) {
+		radius = (float) input->height / (1.5 * height);
+        gray_image *channel = gray_dot(channels[i], height, radius);
+		height = height * (2. / 3);
+		printf("height: %d\n", height);
+        delete channels[i];
+        channels[i] = channel;
+    }
+    image_type *output = merge<image_type>(channels);
+
+    for (int i = 0; i < input->dim; i++) {
+        delete channels[i];
+    }
+    free(channels);
+    return output;
 }
 
 template gray_image *dot(gray_image *, int, float);
