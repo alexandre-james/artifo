@@ -1,5 +1,4 @@
-#ifndef HSV_IMAGE_HPP
-#define HSV_IMAGE_HPP
+#pragma once
 
 #include "image.hpp"
 
@@ -15,5 +14,3 @@ class hsv_image: public image {
 
         hsv_image *copy() const;
 };
-
-#endif  /* HSV_IMAGE_HPP */

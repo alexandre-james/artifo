@@ -1,5 +1,4 @@
-#ifndef GRAY_IMAGE_HPP
-#define GRAY_IMAGE_HPP
+#pragma once
 
 #include "image.hpp"
 
@@ -13,5 +12,3 @@ class gray_image: public image {
 
         gray_image *to_gray() const;
 };
-
-#endif  /* GRAY_IMAGE_HPP */

@@ -1,5 +1,4 @@
-#ifndef CONVERSION_HPP
-#define CONVERSION_HPP
+#pragma once
 
 #include "gray_image.hpp"
 #include "rgb_image.hpp"
@@ -47,5 +46,3 @@ image_type *multiply(image_type *input, const float nb);
 
 template <typename image_type>
 image_type *inverse(image_type *input);
-
-#endif  /* CONVERSION_HPP */

@@ -1,5 +1,4 @@
-#ifndef IMAGE_HPP
-#define IMAGE_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -20,5 +19,3 @@ class image {
 
         void save(const char *filename) const;
 };
-
-#endif  /* IMAGE_HPP */
