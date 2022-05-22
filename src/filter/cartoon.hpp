@@ -11,6 +11,6 @@
 #include "../modifier/modifier.hpp"
 #include "../modifier/convolution.hpp"
 #include "../modifier/filter.hpp"
-#include "../modifier/structure.hpp"
+#include "../construct/structure.hpp"
 
 rgb_image *cartoon(rgb_image *input, int height);
