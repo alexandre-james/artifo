@@ -2,10 +2,10 @@
 
 
 void median_cut(rgb_image *input, vector<vector<int>> bucket) {
-    int r_sum = 0;
-    int g_sum = 0;
-    int b_sum = 0;
-    int count = 0;
+    float r_sum = 0;
+    float g_sum = 0;
+    float b_sum = 0;
+    float count = 0;
 
     // Parcourir le bucket et faire la moyenne des r g, b
 
@@ -15,12 +15,12 @@ void median_cut(rgb_image *input, vector<vector<int>> bucket) {
         b_sum += pixels[2];
         count += 1;
     }
-    int r_average = r_sum / count;
-    int g_average = g_sum / count;
-    int b_average = b_sum / count;
+    float r_average = r_sum / count;
+    float g_average = g_sum / count;
+    float b_average = b_sum / count;
+    //TODO: voir pour la moyenne des couleurs
 
     //Replacer dans l image d origine
-    
     for (auto pixels: bucket) {
         input->pixels[pixels[4] * input->width * input->dim + pixels[3]] = r_average;
         input->pixels[pixels[4] * input->width * input->dim + pixels[3] + 1] = g_average;
@@ -78,8 +78,7 @@ void split_into_buckets(rgb_image *img, vector<vector<int>> bucket, int channel,
     
     // Find the median and cut the region by that pixel.
     size_t median_index = ((bucket.size() + 1) / 2);
-    cout << "Bucket size : " << bucket.size() << '\n'; 
-    cout << "Median index : " << median_index << '\n'; 
+    
     vector<vector<int>> first_part(bucket.begin(), bucket.begin() + median_index); //revoir si bien coupés
     vector<vector<int>> second_part(bucket.begin() + median_index, bucket.end());
 
@@ -94,7 +93,7 @@ vector<vector<int>> create_bucket(rgb_image *input) {
     vector<vector<int>> bucket;
     
     for (int y = 0; y < input->height; y++) {
-        for (int x = 0; x < input->width; x+=3) {
+        for (int x = 0; x < input->width * input->dim; x+=3) {
             vector<int> pixels;
             pixels.push_back(input->pixels[y * input->width * input->dim + x]);
             pixels.push_back(input->pixels[y * input->width * input->dim + x + 1]);
@@ -120,7 +119,7 @@ rgb_image *colorReduction(rgb_image *input, int nb_colors = 16) {
     // Find the color channel in the image with the greatest range
     int channel = more_represented_channel(input);
 
-    split_into_buckets(output, bucket, channel, 4);
+    split_into_buckets(output, bucket, channel, 3);
 
     return output;
 }
