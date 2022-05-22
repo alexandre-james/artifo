@@ -11,4 +11,4 @@
 #include "../modifier/modifier.hpp"
 using namespace std;
 
-rgb_image *colorReduction(rgb_image *input, int nb_colors);
+rgb_image *colorReduction(rgb_image *input, int nb_colors = 16);

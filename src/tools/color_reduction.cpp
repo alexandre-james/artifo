@@ -110,7 +110,7 @@ vector<vector<int>> create_bucket(rgb_image *input) {
 
 
 
-rgb_image *colorReduction(rgb_image *input, int nb_colors = 16) {
+rgb_image *colorReduction(rgb_image *input, int nb_colors) {
 
     rgb_image *output = new rgb_image(input->width, input->height);
     // Move all pixels into a single large bucket.
