@@ -1,12 +1,11 @@
 #pragma once
 
+template <typename num_type>
 class point {
 public:
-    int x, y;
-    point(int x, int y): x(x), y(y) {}
-
-    double dist(point p);
-
-    friend bool operator==(const point& p1, const point& p2);
-
+    num_type x, y;
+    point(num_type x, num_type y): x(x), y(y) {}
 };
+
+template <typename num_type1, typename num_type2>
+float dist(point<num_type1> p1, point<num_type2> p2);

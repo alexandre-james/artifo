@@ -5,6 +5,8 @@
 
 int *get_colors(gray_image* image, int width, int height);
 
-point *get_centers(gray_image* image, int width, int height);
+point<int> *get_centers(gray_image* image, int width, int height);
 
-void paint(gray_image *image, int memory[], int color, float radius, point center, point p);
+void paint(gray_image *image, int color, float radius, point<int> center);
+
+void paint_hexagon(gray_image *input, int color, float radius, point<int> center);

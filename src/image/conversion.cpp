@@ -214,6 +214,21 @@ image_type *inverse(image_type *input) {
     return output; 
 }
 
+template <typename image_type>
+image_type *crop(image_type *input, int padding) {
+    assert(input->width > 2 * padding && input->height > 2 * padding);
+
+    image_type *output = new image_type(input->width - 2 * padding, input->height - 2 * padding);
+
+    for (int y = padding; y < input->height - padding; y++) {
+        for (int x = padding * input->dim; x < (input->width - padding) * input->dim; x++) {
+            output->pixels[(y - padding) * output->width * output->dim + x - padding * output->dim] = input->pixels[y * input->width * input->dim + x];
+        }
+    }
+
+    return output; 
+}
+
 template gray_image *get_channel(gray_image *, const int);
 template gray_image *get_channel(rgb_image *, const int);
 template gray_image *get_channel(rgba_image *, const int);
@@ -258,3 +273,8 @@ template gray_image *inverse(gray_image *);
 template rgb_image *inverse(rgb_image *);
 template rgba_image *inverse(rgba_image *);
 template hsv_image *inverse(hsv_image *);
+
+template gray_image *crop(gray_image *, int);
+template rgb_image *crop(rgb_image *, int);
+template rgba_image *crop(rgba_image *, int);
+template hsv_image *crop(hsv_image *, int);

@@ -46,3 +46,6 @@ image_type *multiply(image_type *input, const float nb);
 
 template <typename image_type>
 image_type *inverse(image_type *input);
+
+template <typename image_type>
+image_type *crop(image_type *input, int padding);

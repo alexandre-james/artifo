@@ -2,12 +2,14 @@
 
 #include <cmath>
 
-bool operator==(const point& p1, const point& p2) {
-	return p1.x == p2.x && p1.y == p2.y;
+template <typename num_type1, typename num_type2>
+float dist(point<num_type1> p1, point<num_type2> p2) {
+	float x = p1.x - p2.x;
+	float y = p1.y - p2.y;
+	return std::sqrt(x * x + y * y);
 }
 
-double point::dist(point p) {
-	int x_gap = x - p.x;
-	int y_gap = y - p.y;
-	return std::sqrt(x_gap * x_gap + y_gap * y_gap);
-}
+template float dist(point<int>, point<int>);
+template float dist(point<float>, point<int>);
+template float dist(point<int>, point<float>);
+template float dist(point<float>, point<float>);

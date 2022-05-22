@@ -1,6 +1,7 @@
 #include "center.hpp"
 
 #include <cstdlib>
+#include <cmath>
 
 int *get_colors(gray_image* input, int width, int height) {
 	// number of dots
@@ -30,8 +31,8 @@ int *get_colors(gray_image* input, int width, int height) {
 	return colors;
 }
 
-point *get_centers(gray_image* input, int width, int height) {
-	point *centers = (point *) malloc(width * height * sizeof(point));
+point<int> *get_centers(gray_image* input, int width, int height) {
+	point<int> *centers = (point<int> *) malloc(width * height * sizeof(point<int>));
 	for (int dy = 0; dy < height; dy++) {
 		int y = dy * input->height / height + input->height / (2 * height);
 		int start = 0;
@@ -48,14 +49,36 @@ point *get_centers(gray_image* input, int width, int height) {
 	return centers;
 }
 
-void paint(gray_image *input, int memory[], int color, float radius, point center, point p) {
-	if (p.x >= 0 && p.y >= 0 && p.x < input->width && p.y < input->height
-		&& center.dist(p) < radius && memory[p.y * input->width + p.x] == 0) {
-		input->pixels[p.y*input->width + p.x] = color;
-		memory[p.y * input->width + p.x] = 1;
-		paint(input, memory, color, radius, center, point(p.x+1, p.y));
-		paint(input, memory, color, radius, center, point(p.x, p.y+1));
-		paint(input, memory, color, radius, center, point(p.x-1, p.y));
-		paint(input, memory, color, radius, center, point(p.x, p.y-1));
+void paint(gray_image *input, int color, float radius, point<int> center) {
+	for (int y = center.y - radius; y <= center.y + radius; y++) {
+		for (int x = center.x - radius; x <= center.x + radius; x++) {
+			if (x >= 0 && y >= 0 && x < input->width && y < input->height
+				&& dist(center, point<int>(x, y)) < radius) {
+				input->pixels[y * input->width + x] = color;
+			}
+		}
+	}
+}
+
+bool in_hexagon(point<int> center, point<int> p, float radius) {
+    float By = center.y - 2 * radius / (float) sqrt(3);
+    float Dy = center.y + 2 * radius / (float) sqrt(3);
+    float a = 1. / sqrt(3);
+    auto f1 = [By, a, center] (int x) { return -a * x + By + a * center.x; };
+    auto f2 = [By, a, center] (int x) { return a * x + By - a * center.x; };
+    auto f3 = [Dy, a, center] (int x) { return -a * x + Dy + a * center.x; };
+    auto f4 = [Dy, a, center] (int x) { return a * x + Dy - a * center.x; };
+    return p.x > center.x - radius && p.x < center.x + radius
+    && p.y > f1(p.x) && p.y > f2(p.x) && p.y < f3(p.x) && p.y < f4(p.x);
+}
+
+void paint_hexagon(gray_image *input, int color, float radius, point<int> center) {
+	for (int y = center.y - radius * 2. / sqrt(3); y <= center.y + radius * 2. / sqrt(3); y++) {
+		for (int x = center.x - radius; x <= center.x + radius; x++) {
+			if (x >= 0 && y >= 0 && x < input->width && y < input->height
+				&& in_hexagon(center, point<int>(x, y), radius)) {
+				input->pixels[y * input->width + x] = color;
+			}
+		}
 	}
 }

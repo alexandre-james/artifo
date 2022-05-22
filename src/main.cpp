@@ -11,6 +11,7 @@
 #include "filter/pixel.hpp"
 #include "filter/cartoon.hpp"
 #include "filter/dot.hpp"
+#include "filter/alveolus.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
@@ -59,11 +60,18 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
         return cartoon(input, atoi(argv[3]));
     }
     if (!strcmp(argv[1], "dot")) {
-        if (argc < 5) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo dot <file_path/all> <radius: double> <height: int>\n");
+        if (argc < 4) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo dot <file_path/all> <width: int>\n");
             exit(1);
         }
-        return dot(input, atoi(argv[4]), strtof(argv[3], nullptr));
+        return dot(input, atoi(argv[3]));
+    }
+    if (!strcmp(argv[1], "alveolus")) {
+        if (argc < 4) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo alveolus <file_path/all> <width: int>\n");
+            exit(1);
+        }
+        return alveolus(input, atoi(argv[3]));
     }
     fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
     exit(1);
