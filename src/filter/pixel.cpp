@@ -17,7 +17,7 @@ rgb_image *pixel(rgb_image *input, int height, int divisions, bool outline) {
         gray_image *gray = input->to_gray();
         gray_image *log = laplacian_of_gaussian(gray, 2, 0.95);
 
-        int size = height / 5;
+        int size = input->height / 100;
         mask *kernel = structuring_element(size, size);
         gray_image *convolution = convolve(log, kernel);
         gray_image *soften = multiply(convolution, 0.5);

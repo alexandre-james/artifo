@@ -41,6 +41,18 @@ hsv_image *rgb_to_hsv(const rgb_image *input) {
     return hsv;
 }
 
+rgba_image *rgb_to_rgba(const rgb_image *input) {
+    rgba_image *output = new rgba_image(input->width, input->height);
+
+    for (int i = 0 ; i < input->width * input->height; i++) {
+        output->pixels[4 * i] = input->pixels[3 * i];
+        output->pixels[4 * i + 1] = input->pixels[3 * i + 1];
+        output->pixels[4 * i + 2] = input->pixels[3 * i + 2];
+        output->pixels[4 * i + 3] = 255;
+    }
+    return output; 
+}
+
 rgb_image *gray_to_rgb(const gray_image *input) {
     rgb_image *output = new rgb_image(input->width, input->height);
 

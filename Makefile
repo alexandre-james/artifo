@@ -5,7 +5,7 @@ CU = nvcc
 CPP_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cpp src/tools/*.cpp src/filter/*.cpp src/construct/*.cpp
 
 CU_FILES = src/image/*.cpp src/features/*.cpp src/modifier/*.cu src/tools/*.cpp src/filter/*.cpp src/construct/*.cpp
-CU_FILES += src/modifier/filter.cpp src/modifier/modifier.cpp
+CU_FILES += src/modifier/filter.cpp src/modifier/modifier.cpp src/modifier/transformation.cpp
 
 OBJ_FILES = $(CPP_FILES:.cpp=.o)
 

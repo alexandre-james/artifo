@@ -4,7 +4,7 @@ rgb_image *cartoon(rgb_image *input, int nb_colors, bool monochrom) {
     gray_image *gray = input->to_gray();
     gray_image *log = laplacian_of_gaussian(gray, 2, 0.95);
 
-    int size = 2; // TODO: size en fonction de input->height
+    int size = input->height / 200;
     mask *kernel = structuring_element(size, size);
     gray_image *convolution = convolve(log, kernel);
     gray_image *soften = multiply(convolution, 0.5);

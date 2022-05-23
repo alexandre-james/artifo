@@ -11,6 +11,7 @@
 /** From rgb **/
 gray_image *rgb_to_gray(const rgb_image *input);
 hsv_image *rgb_to_hsv(const rgb_image *input);
+rgba_image *rgb_to_rgba(const rgb_image *input);
 
 /** To rgb **/
 rgb_image *gray_to_rgb(const gray_image *input);

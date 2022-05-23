@@ -1,3 +1,4 @@
+#include "../lib/gif.h"
 #include "image/conversion.hpp"
 #include "features/histogram.hpp"
 #include "modifier/modifier.hpp"
@@ -12,6 +13,8 @@
 #include "filter/cartoon.hpp"
 #include "filter/dot.hpp"
 #include "filter/alveolus.hpp"
+#include "filter/tv.hpp"
+#include "filter/glass.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
@@ -44,6 +47,35 @@ char *get_name(char *output, const char *filename) {
     return output;
 }
 
+int get_variable(int argc, char **argv, float &min, float &max, float &step) {
+    for (int i = 3; i < argc; i++) {
+        if (argv[i][0] == '[') {
+            char number[100];
+            int j = 1;
+            int k = 0;
+            while (argv[i][j] != ',')
+                number[k++] = argv[i][j++];
+            number[k] = 0;
+            min = atof(number);
+            k = 0;
+            j++;
+            while (argv[i][j] != ',')
+                number[k++] = argv[i][j++];
+            number[k] = 0;
+            max = atof(number);
+            k = 0;
+            j++;
+            while (argv[i][j] != ']')
+                number[k++] = argv[i][j++];
+            number[k] = 0;
+            step = atof(number);
+
+            return i;
+        }
+    }
+    return -1;
+}
+
 rgb_image *filter(rgb_image *input, int argc, char **argv) {
     if (!strcmp(argv[1], "pixel")) {
         if (argc < 6) {
@@ -53,7 +85,7 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
         return pixel(input, atoi(argv[3]), atoi(argv[4]), strcmp(argv[5], "false") && strcmp(argv[5], "0"));
     }
     if (!strcmp(argv[1], "cartoon")) {
-        if (argc < 4) {
+        if (argc < 5) {
             fprintf(stderr, "Invalid parameters\nformat: ./tifo cartoon <file_path/all> <nb_colors: int> <monochrom: bool>\n");
             exit(1);
         }
@@ -72,6 +104,20 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
             exit(1);
         }
         return alveolus(input, atoi(argv[3]));
+    }
+    if (!strcmp(argv[1], "tv")) {
+        if (argc < 3) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo tv <file_path/all>\n");
+            exit(1);
+        }
+        return tv(input);
+    }
+    if (!strcmp(argv[1], "glass")) {
+        if (argc < 5) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo glass <file_path/all> <width: int> <grid: bool>\n");
+            exit(1);
+        }
+        return glass(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
     exit(1);
@@ -142,68 +188,53 @@ int main(int argc, char **argv) {
         printf("filename: %s\n", filename);
 
         rgb_image *input = new rgb_image(filename);
-        rgb_image *output = filter(input, argc, argv);
 
-        strcpy(filename, "output/");
-        strcat(filename, get_name(name, filenames[i]));
-        output->save(filename);
+        float min, max, step;
+        int variable = get_variable(argc, argv, min, max, step);
+
+        printf("min: %f\nmax: %f\nstep: %f\n", min, max, step);
+
+        if (variable == -1) {
+            rgb_image *output = filter(input, argc, argv);
+
+            strcpy(filename, "output/");
+            strcat(filename, get_name(name, filenames[i]));
+            output->save(filename);
+            delete output;
+        }
+        else {
+            argv[variable] = (char*) to_string(min).c_str();
+            rgb_image *output = filter(input, argc, argv);
+            rgba_image *rgba_output = rgb_to_rgba(output);
+            rgba_output->save("flex.png");
+
+            strcpy(filename, "output/");
+            strcat(filename, get_name(name, filenames[i]));
+            strcat(filename, ".gif");
+
+            GifWriter writer = {};
+            GifBegin(&writer, filename, output->width, output->height, 50, 8, true);
+            GifWriteFrame(&writer, rgba_output->pixels, output->width, output->height, 50, 8, true);
+
+            delete output;
+            delete rgba_output;
+
+            for (float i = min + step; i != max; i += step) {
+                argv[variable] = (char*) to_string(i).c_str();
+                output = filter(input, argc, argv);
+                rgba_output = rgb_to_rgba(output);
+
+                GifWriteFrame(&writer, rgba_output->pixels, output->width, output->height, 50, 8, true);
+
+                delete output;
+                delete rgba_output;
+            }
+            GifEnd( &writer );
+        }
 
         delete input;
-        delete output;
     }
 
     free(filenames);
-
-    /*
-
-    gray_image *blue = get_channel(image, BLUE_CHANNEL);
-
-    modifier<gray_image> *modifer = new modifier(blue);
-
-    rgba_image *hist = histogram_to_image(modifer->histograms[0]);
-
-    gray_image *blue_linear = modifer->linear();
-
-    rgb_image *result = set_channel(image, blue_linear, BLUE_CHANNEL);
-
-    hist->save("hist.png");
-    result->save("test-linear.png");
-    blue->save("test-blue.png");
-    blue_linear->save("test-blue_linear.png");
-
-    delete hist;
-    delete image;
-    delete blue;
-    delete modifer;
-    delete blue_linear;
-    delete result;
-
-    int size = 3;
-    float sigma = 0.84089642;
-
-    if (access("output", F_OK))
-        mkdir("output", 0777);
- 
-    rgb_image *result = gaussian(image, size, sigma);
-    result->save("output/pure-gaussian.png");
-
-    rgb_image *result2 = apply_channels(gaussian, image, size, sigma);
-    result2->save("output/chan-gaussian.png");
-
-    gray_image *gray = image->to_gray();
-    gray_image *result3 = gaussian(gray, size, sigma);
-    result3->save("output/gray-gaussian.png");
-
-    gray_image *diff = multiply(difference_of_gaussian(gray, 2), 5);
-    diff->save("output/diff.png");
-
-    delete diff;
-
-    delete result3;
-    delete result2;
-    delete gray;
-    delete result;
-    delete image;*/
-
     return 0;
 }

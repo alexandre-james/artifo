@@ -133,7 +133,7 @@ rgb_image *colorReduction(rgb_image *input, int nb_colors, bool monochrom) {
     // Move all pixels into a single large bucket.
     vector<vector<int>> bucket = create_bucket(input);
 
-    split_into_buckets(output, bucket, 3, monochrom);
+    split_into_buckets(output, bucket, nb_colors, monochrom);
 
     return output;
 }
