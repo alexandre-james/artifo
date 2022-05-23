@@ -13,4 +13,4 @@
 #include "../modifier/filter.hpp"
 #include "../construct/structure.hpp"
 
-rgb_image *cartoon(rgb_image *input, int height);
+rgb_image *cartoon(rgb_image *input, int nb_colors, bool monochrom);

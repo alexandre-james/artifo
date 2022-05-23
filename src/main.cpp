@@ -54,10 +54,10 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
     }
     if (!strcmp(argv[1], "cartoon")) {
         if (argc < 4) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo cartoon <file_path/all> <height: int>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo cartoon <file_path/all> <nb_colors: int> <monochrom: bool>\n");
             exit(1);
         }
-        return cartoon(input, atoi(argv[3]));
+        return cartoon(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "dot")) {
         if (argc < 4) {

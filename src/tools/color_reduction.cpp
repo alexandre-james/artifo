@@ -1,6 +1,5 @@
 #include "color_reduction.hpp"
 
-
 void median_cut(rgb_image *input, vector<vector<int>> bucket) {
     float r_sum = 0;
     float g_sum = 0;
@@ -28,37 +27,54 @@ void median_cut(rgb_image *input, vector<vector<int>> bucket) {
     }
 }
 
-bool mostly(int max, int u, int v) {
-    return max > u && max > v;
-}
-
-int more_represented_channel(rgb_image *image) {
+int more_represented_channel(vector<vector<int>> bucket) {
     int r_count = 0;
     int g_count = 0;
     int b_count = 0;
 
-    for (int i = 0; i < image->length; i+=3) {
-        r_count += image->pixels[i + 0];
-        g_count += image->pixels[i + 1];
-        b_count += image->pixels[i + 2];
+    for (size_t i = 0; i < bucket.size(); i++) {
+        r_count += bucket[i][0];
+        g_count += bucket[i][1];
+        b_count += bucket[i][2];
     }
-    
-    if (mostly(r_count, g_count, b_count)) {
+
+    if (r_count >= b_count && r_count >= g_count)
         return 0;
-    }   
-    if (mostly(g_count, r_count, b_count)) {
+    else if (g_count >= r_count && g_count >= b_count)
         return 1;
-    }   
-    if (mostly(b_count, r_count, g_count)) {
-        return 2;
-    }
-    else {
-        return -1;
-    }
-        
+    return 2;     
 }
 
-void split_into_buckets(rgb_image *img, vector<vector<int>> bucket, int channel, int depth) {
+int get_min(vector<vector<int>> bucket, int channel) {
+    int min = MAX_LEVEL;
+    for (size_t i = 0; i < bucket.size(); i++) {
+        min = std::min(min, bucket[i][channel]);
+    }
+    return min;
+}
+
+int get_max(vector<vector<int>> bucket, int channel) {
+    int max = 0;
+    for (size_t i = 0; i < bucket.size(); i++) {
+        max = std::max(max, bucket[i][channel]);
+    }
+    return max;
+}
+
+int get_highest_range(vector<vector<int>> bucket) {
+    // Find the color channel in the image with the greatest range
+    int r_range = get_max(bucket, RED_CHANNEL) - get_min(bucket, RED_CHANNEL);
+    int g_range = get_max(bucket, GREEN_CHANNEL) - get_min(bucket, GREEN_CHANNEL);
+    int b_range = get_max(bucket, BLUE_CHANNEL) - get_min(bucket, BLUE_CHANNEL);
+
+    if (r_range >= b_range && r_range >= g_range)
+        return 0;
+    else if (g_range >= r_range && g_range >= b_range)
+        return 1;
+    return 2;  
+}
+
+void split_into_buckets(rgb_image *img, vector<vector<int>> bucket, int depth, bool monochrom) {
     
     if (bucket.size() == 0)
     {
@@ -69,6 +85,12 @@ void split_into_buckets(rgb_image *img, vector<vector<int>> bucket, int channel,
         median_cut(img, bucket);
         return;
     }
+
+    int channel;
+    if (monochrom)
+        channel = more_represented_channel(bucket);
+    else
+        channel = get_highest_range(bucket);
 
     // Sort the pixels by that channel values.
     sort(bucket.begin(), bucket.end(), [channel](const vector<int> &a, const vector<int> &b) {
@@ -83,11 +105,9 @@ void split_into_buckets(rgb_image *img, vector<vector<int>> bucket, int channel,
     vector<vector<int>> second_part(bucket.begin() + median_index, bucket.end());
 
     // Repeat the process for both buckets until you have the desired number of colors.
-    split_into_buckets(img, first_part, channel, depth -1);
-    split_into_buckets(img, second_part, channel, depth -1);
+    split_into_buckets(img, first_part, depth -1, monochrom);
+    split_into_buckets(img, second_part, depth -1, monochrom);
 }
-
-
 
 vector<vector<int>> create_bucket(rgb_image *input) {
     vector<vector<int>> bucket;
@@ -107,19 +127,13 @@ vector<vector<int>> create_bucket(rgb_image *input) {
     return bucket;
 }
 
-
-
-
-rgb_image *colorReduction(rgb_image *input, int nb_colors) {
+rgb_image *colorReduction(rgb_image *input, int nb_colors, bool monochrom) {
 
     rgb_image *output = new rgb_image(input->width, input->height);
     // Move all pixels into a single large bucket.
     vector<vector<int>> bucket = create_bucket(input);
-    
-    // Find the color channel in the image with the greatest range
-    int channel = more_represented_channel(input);
 
-    split_into_buckets(output, bucket, channel, 3);
+    split_into_buckets(output, bucket, 3, monochrom);
 
     return output;
 }
