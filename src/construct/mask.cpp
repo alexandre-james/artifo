@@ -58,6 +58,23 @@ image_type *mask::convolve(image_type *input) {
     return output;
 }*/
 
+int mask::ones() {
+    int sum = 0;
+    for (int i = 0; i < height * width; i++) {
+        if (values[i] == 1)
+            sum++;
+    }
+    return sum;
+}
+
+mask *mask::operator/(float n) {
+    mask *output = new mask(height, width);
+    for (int i = 0; i < height * width; i++) {
+        output->values[i] = values[i] / n;
+    }
+    return output;
+}
+
 void mask::print_row(int i) {
     if (i != 0)
         printf(" ");

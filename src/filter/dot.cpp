@@ -1,7 +1,10 @@
 #include "dot.hpp"
+#include "../construct/mask.hpp"
+#include "../construct/structure.hpp"
 #include "../tools/center.hpp"
 #include "../tools/manipulation.hpp"
 #include "../image/conversion.hpp"
+#include "../modifier/convolution.hpp"
 
 #include <cstdlib>
 #include <cmath>
@@ -27,32 +30,38 @@ gray_image *gray_dot(gray_image *input, int width, float radius) {
 }
 
 template <typename image_type>
-image_type *dot(image_type *input, int width) {
+image_type *dot(image_type *input, int width, bool is_crop) {
 	gray_image **channels = get_channels(input);
     float radius = (float) input->width * sqrt(3) / (4 * width);
 
     for (int i = 0; i < input->dim; i++) {
         gray_image *channel = gray_dot(channels[i], width, radius);
+
 		width = width * (2. / 3);
         if (width == 0)
             width = 1;
         radius = (float) input->width * sqrt(3) / (4 * width);
+
         delete channels[i];
         channels[i] = channel;
     }
-    image_type *merged = merge<image_type>(channels);
-    image_type *output = crop(merged, radius);
+    image_type *output = merge<image_type>(channels);
+
+    if (is_crop) {
+        image_type *tmp = crop(output, radius);
+        delete output;
+        output = tmp;
+    }
 
     for (int i = 0; i < input->dim; i++) {
         delete channels[i];
     }
     free(channels);
-    delete merged;
 
     return output;
 }
 
-template gray_image *dot(gray_image *, int);
-template rgb_image *dot(rgb_image *, int);
-template rgba_image *dot(rgba_image *, int);
-template hsv_image *dot(hsv_image *, int);
+template gray_image *dot(gray_image *, int, bool);
+template rgb_image *dot(rgb_image *, int, bool);
+template rgba_image *dot(rgba_image *, int, bool);
+template hsv_image *dot(hsv_image *, int, bool);

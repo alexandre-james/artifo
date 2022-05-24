@@ -14,7 +14,10 @@ class mask {
         mask(std::initializer_list<std::initializer_list<float>> init);
         ~mask();
 
+        int ones();
+
         mask *transpose();
+        mask *operator/(float n);
         
         void print();
 };

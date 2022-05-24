@@ -15,6 +15,7 @@
 #include "filter/alveolus.hpp"
 #include "filter/tv.hpp"
 #include "filter/glass.hpp"
+#include "filter/manga.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
@@ -40,10 +41,15 @@ char *get_name(char *output, const char *filename) {
     while (filename[i] != 0) {
         i++;
     }
+    int length = i - 1;
     while (i >= 0 && filename[i] != '/') {
         i--;
     }
-    strcpy(output, filename + i + 1);
+    while (length >= 0 && filename[length] != '.') {
+        length--;
+    }
+    strncpy(output, filename + i + 1, length - (i + 1));
+    output[length - (i + 1)] = 0;
     return output;
 }
 
@@ -92,18 +98,18 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
         return cartoon(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "dot")) {
-        if (argc < 4) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo dot <file_path/all> <width: int>\n");
+        if (argc < 5) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo dot <file_path/all> <width: int> <is_crop: bool>\n");
             exit(1);
         }
-        return dot(input, atoi(argv[3]));
+        return dot(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "alveolus")) {
-        if (argc < 4) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo alveolus <file_path/all> <width: int>\n");
+        if (argc < 5) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo alveolus <file_path/all> <width: int> <is_crop: bool>\n");
             exit(1);
         }
-        return alveolus(input, atoi(argv[3]));
+        return alveolus(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "tv")) {
         if (argc < 3) {
@@ -118,6 +124,13 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
             exit(1);
         }
         return glass(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
+    }
+    if (!strcmp(argv[1], "manga")) {
+        if (argc < 3) {
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo manga <file_path/all>\n");
+            exit(1);
+        }
+        return manga(input);
     }
     fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
     exit(1);
@@ -157,8 +170,10 @@ int main(int argc, char **argv) {
         int i = 0;
         seekdir(dr, 0);
         while ((de = readdir(dr)) != NULL) {
-            if (is_image(de->d_name))
-                filenames[i++] = de->d_name;
+            if (is_image(de->d_name)) {
+                filenames[i] = (char *) malloc(100);
+                strcpy(filenames[i++], de->d_name);
+            }
         }
         
         closedir(dr);
@@ -169,13 +184,10 @@ int main(int argc, char **argv) {
         filenames[0] = argv[2];
     }
 
-    printf("nb_files: %d\n", nb_files);
-
     if (access("output", F_OK))
         mkdir("output", 0777);
 
     for (int i = 0; i < nb_files; i++) {
-        printf("filenames[i]: %s\n", filenames[i]);
         char filename[100];
         char name[100];
         if (all) {
@@ -185,31 +197,32 @@ int main(int argc, char **argv) {
         else {
             strcpy(filename, filenames[i]);
         }
-        printf("filename: %s\n", filename);
 
         rgb_image *input = new rgb_image(filename);
 
         float min, max, step;
         int variable = get_variable(argc, argv, min, max, step);
 
-        printf("min: %f\nmax: %f\nstep: %f\n", min, max, step);
-
         if (variable == -1) {
             rgb_image *output = filter(input, argc, argv);
 
             strcpy(filename, "output/");
             strcat(filename, get_name(name, filenames[i]));
+            strcat(filename, ".png");
             output->save(filename);
             delete output;
         }
         else {
+            char original[100];
+            strcpy(original, argv[variable]);
+
             argv[variable] = (char*) to_string(min).c_str();
             rgb_image *output = filter(input, argc, argv);
             rgba_image *rgba_output = rgb_to_rgba(output);
             rgba_output->save("flex.png");
-
             strcpy(filename, "output/");
             strcat(filename, get_name(name, filenames[i]));
+            printf("filename: %s\n", filename);
             strcat(filename, ".gif");
 
             GifWriter writer = {};
@@ -219,8 +232,8 @@ int main(int argc, char **argv) {
             delete output;
             delete rgba_output;
 
-            for (float i = min + step; i != max; i += step) {
-                argv[variable] = (char*) to_string(i).c_str();
+            for (float i = min + step; (min < max && i < max) || (min > max && i > max); i += step) {
+                argv[variable] = (char *) to_string(i).c_str();
                 output = filter(input, argc, argv);
                 rgba_output = rgb_to_rgba(output);
 
@@ -229,7 +242,10 @@ int main(int argc, char **argv) {
                 delete output;
                 delete rgba_output;
             }
+
             GifEnd( &writer );
+            argv[variable] = original;
+            free(filenames[i]);
         }
 
         delete input;

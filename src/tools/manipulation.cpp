@@ -1,5 +1,6 @@
 #include "manipulation.hpp"
 #include "../image/conversion.hpp"
+#include "../construct/mask.hpp"
 
 #include <cstdlib>
 
