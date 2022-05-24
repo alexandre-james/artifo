@@ -15,7 +15,7 @@
 #include "filter/alveolus.hpp"
 #include "filter/tv.hpp"
 #include "filter/glass.hpp"
-#include "filter/manga.hpp"
+#include "filter/engraving.hpp"
 
 #include <cstdio>
 #include <sys/stat.h>
@@ -125,12 +125,12 @@ rgb_image *filter(rgb_image *input, int argc, char **argv) {
         }
         return glass(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
-    if (!strcmp(argv[1], "manga")) {
+    if (!strcmp(argv[1], "engraving")) {
         if (argc < 3) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo manga <file_path/all>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./tifo engraving <file_path/all>\n");
             exit(1);
         }
-        return manga(input);
+        return engraving(input);
     }
     fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
     exit(1);
