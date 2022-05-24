@@ -191,6 +191,21 @@ image_type *add(image_type *input1, image_type *input2) {
     return output;
 }
 
+rgb_image *synthesis(rgb_image *input1, rgba_image *input2) {
+    assert(input1->width == input2->width && input1->height == input2->height);
+
+    rgb_image *output = new rgb_image(input1->width, input1->height);
+
+    for (int i = 0; i < output->width * output->height; i++) {
+        float opacity = ((255. - input2->pixels[4 * i + 3]) / 255);
+        output->pixels[3 * i] = bound((input2->pixels[4 * i] + opacity * input1->pixels[3 * i]) / (1 + opacity));
+        output->pixels[3 * i + 1] = bound((input2->pixels[4 * i + 1] + opacity * input1->pixels[3 * i + 1]) / (1 + opacity));
+        output->pixels[3 * i + 2] = bound((input2->pixels[4 * i + 2] + opacity * input1->pixels[3 * i + 2]) / (1 + opacity));
+    }
+
+    return output;
+}
+
 template <typename image_type>
 image_type *substract(image_type *input1, image_type *input2) {
     assert(input1->width == input2->width && input1->height == input2->height);

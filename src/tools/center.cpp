@@ -1,4 +1,5 @@
 #include "center.hpp"
+#include "../image/rgb_image.hpp"
 
 #include <cstdlib>
 #include <cmath>
@@ -49,12 +50,15 @@ point<float> *get_centers(gray_image* input, int width, int height) {
 	return centers;
 }
 
-void paint(gray_image *input, int color, float radius, point<float> center) {
+template <typename image_type>
+void paint(image_type *input, int color, float radius, point<float> center) {
 	for (int y = center.y - radius; y <= center.y + radius; y++) {
 		for (int x = center.x - radius; x <= center.x + radius; x++) {
 			if (x >= 0 && y >= 0 && x < input->width && y < input->height
-				&& dist(center, point<int>(x, y)) < radius) {
-				input->pixels[y * input->width + x] = color;
+			&& dist(center, point<int>(x, y)) < radius) {
+				for (int i = 0; i < input->dim; i++) {
+					input->pixels[y * input->width * input->dim + x * input->dim + i] = color;
+				}
 			}
 		}
 	}
@@ -72,13 +76,22 @@ bool in_hexagon(point<float> center, point<int> p, float radius) {
     && p.y > f1(p.x) && p.y > f2(p.x) && p.y < f3(p.x) && p.y < f4(p.x);
 }
 
-void paint_hexagon(gray_image *input, int color, float radius, point<float> center) {
+template <typename image_type>
+void paint_hexagon(image_type *input, int color, float radius, point<float> center) {
 	for (int y = center.y - radius * 2. / sqrt(3); y <= center.y + radius * 2. / sqrt(3); y++) {
 		for (int x = center.x - radius; x <= center.x + radius; x++) {
 			if (x >= 0 && y >= 0 && x < input->width && y < input->height
-				&& in_hexagon(center, point<int>(x, y), radius)) {
-				input->pixels[y * input->width + x] = color;
+			&& in_hexagon(center, point<int>(x, y), radius)) {
+				for (int i = 0; i < input->dim; i++) {
+					input->pixels[y * input->width * input->dim + x * input->dim + i] = color;
+				}
 			}
 		}
 	}
 }
+
+template void paint(gray_image *, int, float, point<float>);
+template void paint(rgb_image *, int, float, point<float>);
+
+template void paint_hexagon(gray_image *, int, float, point<float>);
+template void paint_hexagon(rgb_image *, int, float, point<float>);

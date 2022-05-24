@@ -7,6 +7,8 @@ int *get_colors(gray_image* image, int width, int height);
 
 point<float> *get_centers(gray_image* image, int width, int height);
 
-void paint(gray_image *image, int color, float radius, point<float> center);
+template <typename image_type>
+void paint(image_type *input, int color, float radius, point<float> center);
 
-void paint_hexagon(gray_image *input, int color, float radius, point<float> center);
+template <typename image_type>
+void paint_hexagon(image_type *input, int color, float radius, point<float> center);

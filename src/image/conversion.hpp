@@ -39,6 +39,8 @@ uint8_t bound(int nb);
 template <typename image_type>
 image_type *add(image_type *input1, image_type *input2);
 
+rgb_image *synthesis(rgb_image *input1, rgba_image *input2);
+
 template <typename image_type>
 image_type *substract(image_type *input1, image_type *input2);
 
