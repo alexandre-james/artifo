@@ -51,7 +51,6 @@ rgb_image *tv(rgb_image *input) {
     rgb_image *peppered = substract(salty, pepper);
 
     int kernel_size = sqrt((input->width + input->height) / 50);
-    printf("kernel_size: %d\n", kernel_size);
     rgb_image *gauss = apply_channels(average, peppered, kernel_size, kernel_size);
 
     gray_image **channels = get_channels(gauss);

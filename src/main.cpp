@@ -181,7 +181,8 @@ int main(int argc, char **argv) {
     else {
         nb_files = 1;
         filenames = (char **) malloc(sizeof(char *));
-        filenames[0] = argv[2];
+        filenames[0] = (char *) malloc(100);
+        strcpy(filenames[0], argv[2]);
     }
 
     if (access("output", F_OK))
