@@ -15,8 +15,8 @@ gray_image *gray_alveolus(gray_image *input, int width, float radius) {
 
 	gray_image *output = new gray_image(input->width, input->height);
 
-	for (int i = 0; i < input->length; i++) {
-		output->pixels[i] = 0;
+    for (int i = 0; i < width * height; i++) {
+		paint_hexagon(output, bound(colors[i] - 10), radius * 1.3, centers[i]);
 	}
 
 	for (int i = 0; i < width * height; i++) {
@@ -30,31 +30,14 @@ gray_image *gray_alveolus(gray_image *input, int width, float radius) {
 
 template <typename image_type>
 image_type *alveolus(image_type *input, int width, bool is_crop) {
-	gray_image **channels = get_channels(input);
     float radius = (float) input->width * sqrt(3) / (4 * width);
-
-    for (int i = 0; i < input->dim; i++) {
-        gray_image *channel = gray_alveolus(channels[i], width, radius);
-		width = width * (2. / 3);
-        if (width == 0)
-            width = 1;
-        radius = (float) input->width * sqrt(3) / (4 * width);
-        delete channels[i];
-        channels[i] = channel;
-    }
-    image_type *output = merge<image_type>(channels);
+    image_type *output = apply_channels(gray_alveolus, input, width, radius);
 
     if (is_crop) {
         image_type *tmp = crop(output, radius);
         delete output;
         output = tmp;
     }
-
-    for (int i = 0; i < input->dim; i++) {
-        delete channels[i];
-    }
-    free(channels);
-
     return output;
 }
 

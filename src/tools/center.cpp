@@ -72,8 +72,8 @@ bool in_hexagon(point<float> center, point<int> p, float radius) {
     auto f2 = [By, a, center] (int x) { return a * x + By - a * center.x; };
     auto f3 = [Dy, a, center] (int x) { return -a * x + Dy + a * center.x; };
     auto f4 = [Dy, a, center] (int x) { return a * x + Dy - a * center.x; };
-    return p.x > center.x - radius && p.x < center.x + radius
-    && p.y > f1(p.x) && p.y > f2(p.x) && p.y < f3(p.x) && p.y < f4(p.x);
+    return p.x >= center.x - radius && p.x <= center.x + radius
+    && p.y >= f1(p.x) && p.y >= f2(p.x) && p.y <= f3(p.x) && p.y <= f4(p.x);
 }
 
 template <typename image_type>
