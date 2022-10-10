@@ -1,4 +1,4 @@
-#include "dot.hpp"
+#include "honeycomb.hpp"
 #include "../tools/center.hpp"
 #include "../tools/manipulation.hpp"
 #include "../image/conversion.hpp"
@@ -8,7 +8,7 @@
 
 #include <cstdio>
 
-gray_image *gray_alveolus(gray_image *input, int width, float radius) {
+gray_image *gray_honeycomb(gray_image *input, int width, float radius) {
 	int height = (double) width * (2. / sqrt(3)) * input->height / input->width;
 	int *colors = get_colors(input, width, height);
 	point<float> *centers = get_centers(input, width, height);
@@ -29,9 +29,9 @@ gray_image *gray_alveolus(gray_image *input, int width, float radius) {
 }
 
 template <typename image_type>
-image_type *alveolus(image_type *input, int width, bool is_crop) {
+image_type *honeycomb(image_type *input, int width, bool is_crop) {
     float radius = (float) input->width * sqrt(3) / (4 * width);
-    image_type *output = apply_channels(gray_alveolus, input, width, radius);
+    image_type *output = apply_channels(gray_honeycomb, input, width, radius);
 
     if (is_crop) {
         image_type *tmp = crop(output, radius);
@@ -41,7 +41,7 @@ image_type *alveolus(image_type *input, int width, bool is_crop) {
     return output;
 }
 
-template gray_image *alveolus(gray_image *, int, bool);
-template rgb_image *alveolus(rgb_image *, int, bool);
-template rgba_image *alveolus(rgba_image *, int, bool);
-template hsv_image *alveolus(hsv_image *, int, bool);
+template gray_image *honeycomb(gray_image *, int, bool);
+template rgb_image *honeycomb(rgb_image *, int, bool);
+template rgba_image *honeycomb(rgba_image *, int, bool);
+template hsv_image *honeycomb(hsv_image *, int, bool);

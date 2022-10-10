@@ -12,7 +12,7 @@
 #include "filter/pixel.hpp"
 #include "filter/cartoon.hpp"
 #include "filter/dot.hpp"
-#include "filter/alveolus.hpp"
+#include "filter/honeycomb.hpp"
 #include "filter/tv.hpp"
 #include "filter/glass.hpp"
 #include "filter/engraving.hpp"
@@ -85,60 +85,60 @@ int get_variable(int argc, char **argv, float &min, float &max, float &step) {
 rgb_image *filter(rgb_image *input, int argc, char **argv) {
     if (!strcmp(argv[1], "pixel")) {
         if (argc < 6) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo pixel <file_path/all> <height: int> <divisions: int> <outline: bool>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo pixel <file_path/all> <height: int> <divisions: int> <outline: bool>\n");
             exit(1);
         }
         return pixel(input, atoi(argv[3]), atoi(argv[4]), strcmp(argv[5], "false") && strcmp(argv[5], "0"));
     }
     if (!strcmp(argv[1], "cartoon")) {
         if (argc < 5) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo cartoon <file_path/all> <nb_colors: int> <monochrom: bool>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo cartoon <file_path/all> <nb_colors: int> <monochrom: bool>\n");
             exit(1);
         }
         return cartoon(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "dot")) {
         if (argc < 5) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo dot <file_path/all> <width: int> <is_crop: bool>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo dot <file_path/all> <width: int> <is_crop: bool>\n");
             exit(1);
         }
         return dot(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
-    if (!strcmp(argv[1], "alveolus")) {
+    if (!strcmp(argv[1], "honeycomb")) {
         if (argc < 5) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo alveolus <file_path/all> <width: int> <is_crop: bool>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo honeycomb <file_path/all> <width: int> <is_crop: bool>\n");
             exit(1);
         }
-        return alveolus(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
+        return honeycomb(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "tv")) {
         if (argc < 3) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo tv <file_path/all>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo tv <file_path/all>\n");
             exit(1);
         }
         return tv(input);
     }
     if (!strcmp(argv[1], "glass")) {
         if (argc < 5) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo glass <file_path/all> <width: int> <grid: bool>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo glass <file_path/all> <width: int> <grid: bool>\n");
             exit(1);
         }
         return glass(input, atoi(argv[3]), strcmp(argv[4], "false") && strcmp(argv[4], "0"));
     }
     if (!strcmp(argv[1], "engraving")) {
         if (argc < 3) {
-            fprintf(stderr, "Invalid parameters\nformat: ./tifo engraving <file_path/all>\n");
+            fprintf(stderr, "Invalid parameters\nformat: ./artifo engraving <file_path/all>\n");
             exit(1);
         }
         return engraving(input);
     }
-    fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./tifo <filter> <file_path/all> <args...>\n");
+    fprintf(stderr, "Invalid parameters: this filter doesn't exist\nformat: ./artifo <filter> <file_path/all> <args...>\n");
     exit(1);
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) {
-        fprintf(stderr, "Invalid parameters\nformat: ./tifo <filter> <file_path/all> <args...>\n");
+        fprintf(stderr, "Invalid parameters\nformat: ./artifo <filter> <file_path/all> <args...>\n");
         return 1;
     }
 
