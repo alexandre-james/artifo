@@ -58,7 +58,7 @@ Then you can run a command line like:
 
 *The parameter [1,10,1] means that the number of colors will vary from 1 to 10 with a step of 1. The output file is a gif.*
 
-*Any numeric parameters can be substitued by a variation range but only one among the arguments*
+*Any numeric parameter can be substitued by a variation range but only one among the arguments*
 
 Filters
 -------
