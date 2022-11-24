@@ -9,7 +9,7 @@ Filters and artistic effects
 [![MIT licensed][shield-license]](#)
 
 ```sh
-./artifo engraving input/landscape.jpg
+./artifo tv input/landscape.jpg
 ```
 
 <img src="docs/results/landscape.png" alt="landscape" height="250"/>
